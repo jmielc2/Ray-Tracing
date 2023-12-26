@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+Ray-Tracing/**/*.png
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

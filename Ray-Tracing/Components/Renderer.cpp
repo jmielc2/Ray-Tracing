@@ -18,13 +18,13 @@ Renderer::Renderer() : _width(default_width), _height(default_height), _window(n
 
 Renderer::~Renderer() {
 	delete _camera;
-	SDL_FreeSurface(_image);
 	SDL_DestroyWindow(_window);
 	SDL_Quit();
 }
 
 Uint32 Renderer::calcPixelColor(int x, int y) {
 	// TODO: Implement Ray Tracing algorithm
+	Ray ray = _camera->getRay(x, y);
 	return 0xffff00ff;
 }
 

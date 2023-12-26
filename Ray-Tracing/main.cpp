@@ -22,8 +22,11 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_KEYUP:
 				if (event.key.keysym.sym == SDLK_s) {
-					IMG_SavePNG(renderer.getImage(), "rendered-scene.png");
-					SDL_Log("Image saved to 'rendered-scene.png'\n");
+					if (!IMG_SavePNG(renderer.getImage(), "rendered-scene.png")) {
+						SDL_Log("Image saved to 'rendered-scene.png'\n");
+					} else {
+						SDL_Log("Image couldn't be saved.\n");
+					}
 				}
 				break;
 			}
