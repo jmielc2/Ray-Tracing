@@ -1,3 +1,4 @@
+#include "../stdafx.h"
 #include "Entity.h"
 
 Entity::Entity(const glm::vec3& position) : _position(position), _backward(-1.0f, 0.0f, 0.0f), _right(0.0f, 0.0f, 1.0f), _up(0.0f, 1.0f, 0.0f) {

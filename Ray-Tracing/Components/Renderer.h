@@ -19,7 +19,7 @@ protected:
 	int _width;
 	int _height;
 	SDL_Window* _window;
-	SDL_Renderer* _renderer;
+	SDL_Surface* _image;
 	Camera* _camera;
 	std::vector<Surface*> _objects;
 	std::vector<Entity*> _lights;
@@ -33,7 +33,8 @@ public:
 
 	bool loadScene(const std::string& filename);
 	bool render();
-	inline SDL_Renderer* getRenderer() { return _renderer; }
+	inline SDL_Surface* getImage() { return _image; }
+	inline SDL_Window* getWindow() { return _window; }
 };
 
 #endif

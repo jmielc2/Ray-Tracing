@@ -8,7 +8,7 @@
 const int Renderer::default_width = 650;
 const int Renderer::default_height = 500;
 
-Renderer::Renderer() : _width(default_width), _height(default_height), _window(nullptr), _renderer(nullptr), _camera(nullptr) {
+Renderer::Renderer() : _width(default_width), _height(default_height), _window(nullptr), _image(nullptr), _camera(nullptr) {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Log("SDL failed to initialize: %s\n", SDL_GetError());
 		std::exit(1);
@@ -18,7 +18,7 @@ Renderer::Renderer() : _width(default_width), _height(default_height), _window(n
 
 Renderer::~Renderer() {
 	delete _camera;
-	SDL_DestroyRenderer(_renderer);
+	SDL_FreeSurface(_image);
 	SDL_DestroyWindow(_window);
 	SDL_Quit();
 }
@@ -36,33 +36,22 @@ bool Renderer::loadScene(const std::string& filename) {
 		SDL_Log("SDL failed to create a window: %s\n", SDL_GetError());
 		return false;
 	}
-	_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED);
-	if (!_renderer) {
-		SDL_Log("SDL failed to create a window renderer: %s\n", SDL_GetError());
-		return false;
-	}
+	_image = SDL_GetWindowSurface(_window);
 	_camera = new PerspCamera();
 	return true;
 }
 
 bool Renderer::render() {
 	using namespace std::chrono;
-
-	SDL_Surface* image = SDL_CreateRGBSurfaceWithFormat(0, _width, _height, 32, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32);
-	for (int y = 0; y < image->h; y++) {
-		for (int x = 0; x < image->w; x++) {
-			((Uint32*)image->pixels)[y * image->w + x] = calcPixelColor(x, y);
+	high_resolution_clock clock;
+	steady_clock::time_point start = clock.now();
+	for (int y = 0; y < _image->h; y++) {
+		for (int x = 0; x < _image->w; x++) {
+			((Uint32*)_image->pixels)[y * _image->w + x] = calcPixelColor(x, y);
 		}
 	}
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, image);
-	SDL_FreeSurface(image);
-	if (!texture) {
-		SDL_Log("SDL failed to convert surface to a texture: %s\n", SDL_GetError());
-		return false;
-	}
-	SDL_RenderCopyEx(_renderer, texture, nullptr, nullptr, 0.0, nullptr, SDL_FLIP_VERTICAL);
-	SDL_DestroyTexture(texture);
+	steady_clock::time_point end = clock.now();
+	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count());
 	SDL_ShowWindow(_window);
-	SDL_RenderPresent(_renderer);
 	return true;
 }

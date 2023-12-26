@@ -1,6 +1,5 @@
+#include "../stdafx.h"
 #include "Ray.h"
-#include "SDL.h"
-#include "glm.hpp"
 
 Ray::Ray(const glm::vec3& start, const glm::vec3& direction) : _start(start), _direction(direction), _minBound(0.0f), _maxBound(INFINITY) {
 	return;
