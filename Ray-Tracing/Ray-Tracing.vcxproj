@@ -146,10 +146,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Components\Camera.cpp" />
+    <ClCompile Include="Components\Entity.cpp" />
+    <ClCompile Include="Components\Ray.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\Camera.h" />
+    <ClInclude Include="Components\Entity.h" />
+    <ClInclude Include="Components\Ray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
