@@ -8,7 +8,7 @@ Entity::Entity(const glm::vec3& position, const glm::vec3& backward, const glm::
 	return;
 }
 
-// 3D Orthonormal Basis aligned with the given yaw and pitch
+// Creates 3D Orthonormal Basis aligned with the given yaw and pitch
 Entity& Entity::setOrientation(float yaw, float pitch) {
 	pitch = 90.0f + (-1.0f * pitch);
 	_backward = -1.0f * glm::normalize(glm::vec3(glm::sin(glm::radians(pitch)) * glm::cos(glm::radians(yaw)), glm::cos(glm::radians(pitch)), -1.0f * glm::sin(glm::radians(pitch)) * glm::sin(glm::radians(yaw))));

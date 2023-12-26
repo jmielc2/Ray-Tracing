@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -148,12 +148,21 @@
     <ClCompile Include="Components\Camera.cpp" />
     <ClCompile Include="Components\Entity.cpp" />
     <ClCompile Include="Components\Ray.cpp" />
+    <ClCompile Include="Components\Renderer.cpp" />
+    <ClCompile Include="Components\Surface.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\Camera.h" />
     <ClInclude Include="Components\Entity.h" />
     <ClInclude Include="Components\Ray.h" />
+    <ClInclude Include="Components\Renderer.h" />
+    <ClInclude Include="Components\Surface.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="scene.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

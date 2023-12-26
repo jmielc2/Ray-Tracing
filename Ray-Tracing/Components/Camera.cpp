@@ -1,5 +1,5 @@
+#include "../stdafx.h"
 #include "Camera.h"
-#include "gtx/transform.hpp"
 #include <stdio.h>
 
 /* Abstract Camera Class */
@@ -34,6 +34,7 @@ OrthoCamera::OrthoCamera(const glm::vec3& position, int x, int y) : Camera(posit
 }
 
 Ray OrthoCamera::getRay(int pixelX, int pixelY) const {
+	// TODO: Compute the ray for the given pixel
 	return Ray(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
@@ -58,6 +59,7 @@ PerspCamera& PerspCamera::setOrientation(float yaw, float pitch) {
 }
 
 Ray PerspCamera::getRay(int pixelX, int pixelY) const {
+	// TODO: Compute the ray for the given pixel
 	return Ray(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 

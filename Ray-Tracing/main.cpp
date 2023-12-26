@@ -1,9 +1,26 @@
-#include "Components/Camera.h"
-#include <SDL.h>
+#include "stdafx.h"
+#include "Components/Renderer.h"
 
 int main(int argc, char* argv[]) {
-	PerspCamera camera(glm::vec3(0.0f, 0.0f, 5.0f), 0.5f, 200, 200);
-	camera.setOrientation(10.0f, -45.0f);
-	camera.debug();
+	Renderer renderer;
+	if (!renderer.loadScene("scene.txt")) {
+		return 1;
+	}
+	if (!renderer.render()) {
+		return 1;
+	}
+	SDL_Renderer* sdl_renderer = renderer.getRenderer();
+	SDL_Event event;
+	bool done = false;
+	while (!done) {
+		SDL_RenderPresent(sdl_renderer);
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_QUIT:
+				done = true;
+				break;
+			}
+		}
+	}
 	return 0;
 }

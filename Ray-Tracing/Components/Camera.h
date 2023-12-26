@@ -20,7 +20,7 @@ public:
 	Camera(const glm::vec3& position, int x, int y);
 
 	virtual Ray getRay(int pixelX, int pixelY) const = 0;
-	void debug() const;
+	virtual void debug() const;
 };
 
 class OrthoCamera : public Camera {
@@ -44,7 +44,7 @@ public:
 	
 	PerspCamera& setOrientation(float yaw, float pitch);
 	virtual Ray getRay(int pixelX, int pixelY) const;
-	void debug() const;
+	virtual void debug() const;
 };
 
 #endif
