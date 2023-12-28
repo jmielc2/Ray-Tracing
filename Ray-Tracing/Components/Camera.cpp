@@ -6,7 +6,7 @@
 
 /* Abstract Camera Class */
 
-Camera::Camera(const glm::vec3& position, int x, int y) : Entity(position), _imgViewX(x), _imgViewY(y) {
+Camera::Camera(const glm::vec3& position, int x, int y, float renderDist) : Entity(position), _imgViewX(x), _imgViewY(y), _renderDist(renderDist) {
 	return;
 }
 
@@ -21,19 +21,19 @@ void Camera::debug() const {
 
 /* Orthogonal Camera Class */
 
-OrthoCamera::OrthoCamera(const glm::vec3& position, int x, int y) : Camera(position, x, y) {
+OrthoCamera::OrthoCamera(const glm::vec3& position, int x, int y, float renderDist) : Camera(position, x, y, renderDist) {
 	return;
 }
 
 Ray OrthoCamera::getRay(int pixelX, int pixelY) const {
 	float x = (_imgViewX / -200.0f) + (pixelX / 100.0f);
 	float y = (_imgViewY / -200.0f) + (pixelY / 100.0f);
-	return Ray(_position + (x * _right) + (y * _up), -1.0f * _backward);
+	return Ray(_position + (x * _right) + (y * _up), -1.0f * _backward, _renderDist);
 }
 
 /* Perspective Camera Class */
 
-PerspCamera::PerspCamera(const glm::vec3& position, float focalDist, int x, int y) : Camera(position, x, y), _viewpoint(_position + (_backward * focalDist)), _focalDist(focalDist) {
+PerspCamera::PerspCamera(const glm::vec3& position, float focalDist, int x, int y, float renderDist) : Camera(position, x, y, renderDist), _viewpoint(_position + (_backward * focalDist)), _focalDist(focalDist) {
 	return;
 }
 
@@ -47,7 +47,7 @@ Ray PerspCamera::getRay(int pixelX, int pixelY) const {
 	float x = (_imgViewX / -200.0f) + (pixelX / 100.0f);
 	float y = (_imgViewY / -200.0f) + (pixelY / 100.0f);
 	glm::vec3 start = _position + (x * _right) + (y * _up);
-	return Ray(start, start - _viewpoint);
+	return Ray(start, start - _viewpoint, _renderDist);
 }
 
 #ifdef _DEBUG

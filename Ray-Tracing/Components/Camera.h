@@ -20,8 +20,9 @@ class Camera : public Entity {
 protected:
 	int _imgViewX;
 	int _imgViewY;
+	float _renderDist;
 public:
-	Camera(const glm::vec3& position, int x, int y);
+	Camera(const glm::vec3& position, int x, int y, float renderDist = INFINITY);
 
 	virtual Ray getRay(int pixelX, int pixelY) const = 0;
 #ifdef _DEBUG
@@ -32,7 +33,7 @@ public:
 class OrthoCamera : public Camera {
 protected:
 public:
-	OrthoCamera(const glm::vec3& position, int x, int y);
+	OrthoCamera(const glm::vec3& position, int x, int y, float renderDist = INFINITY);
 	
 	virtual Ray getRay(int pixelX, int pixelY) const;
 };
@@ -42,7 +43,7 @@ protected:
 	glm::vec3 _viewpoint;
 	float _focalDist;
 public:
-	PerspCamera(const glm::vec3& position, float focalDist, int x, int y);
+	PerspCamera(const glm::vec3& position, float focalDist, int x, int y, float renderDist = INFINITY);
 	
 	virtual PerspCamera& setOrientation(float yaw, float pitch, float roll = 0.0f);
 	virtual Ray getRay(int pixelX, int pixelY) const;

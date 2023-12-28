@@ -7,6 +7,10 @@ Ray::Ray(const glm::vec3& start, const glm::vec3& direction) : _start(start), _d
 	return;
 }
 
+Ray::Ray(const glm::vec3& start, const glm::vec3& direction, float maxBound) : Ray(start, direction, 0.0f, maxBound) {
+	return;
+}
+
 Ray::Ray(const glm::vec3& start, const glm::vec3& direction, float minBound, float maxBound) : _start(start), _direction(glm::normalize(direction)), _minBound(minBound), _maxBound(maxBound) {
 	return;
 }

@@ -16,15 +16,32 @@ Renderer::Renderer() : _width(default_width), _height(default_height), _window(n
 }
 
 Renderer::~Renderer() {
+	for (Surface* obj : _objects) {
+		delete obj;
+	}
 	delete _camera;
 	SDL_DestroyWindow(_window);
 	SDL_Quit();
 }
 
-Uint32 Renderer::calcPixelColor(int x, int y) {
-	// TODO: Implement Ray Tracing algorithm
-	Ray ray = _camera->getRay(x, y);
-	return 0xffff00ff;
+Uint32 Renderer::traceRay(const Ray& ray, int bounces) {
+	// Find closest object of intersection
+	Surface* closest = nullptr;
+	float t = INFINITY;
+	for (Surface* obj : _objects) {
+		float intersection = obj->getIntersectionParam(ray);
+		if (intersection >= 0.0f && intersection < t) {
+			t = intersection;
+			closest = obj;
+		}
+	}
+
+	// Calculate the object's color at point of intersection (if object of intersection exists)
+	if (closest) {
+		glm::vec3 color = closest->getBaseColor(ray.getPoint(t));
+		return (0xff000000 | (Uint32(color.r) << 16) | (Uint32(color.g) << 8) | Uint32(color.b));
+	}
+	return 0xff000000;
 }
 
 bool Renderer::loadScene(const std::string& filename) {
@@ -36,9 +53,15 @@ bool Renderer::loadScene(const std::string& filename) {
 		return false;
 	}
 	_image = SDL_GetWindowSurface(_window);
-	_camera = new PerspCamera(glm::vec3(0.0f, 5.0f, 10.0f), 4.0f, _width, _height);
-	// _camera = new OrthoCamera(glm::vec3(0.0f, 5.0f, 10.0f), _width, _height);
-	_camera->setOrientation(90.0f, -10.0f);
+
+	// Setup Camera
+	_camera = new PerspCamera(glm::vec3(0.0f, 2.0f, 7.0f), 4.0f, _width, _height);
+	// _camera = new OrthoCamera(glm::vec3(0.0f, 5.0f, 10.0f), _width, _height, 500.0f);
+	_camera->setOrientation(45.0f, -15.0f);
+
+	// Setup Objects
+	_objects.push_back(new Ground(glm::vec3(255.0f, 255.0f, 255.0f)));
+
 #ifdef _DEBUG
 	_camera->debug();
 #endif
@@ -51,7 +74,8 @@ bool Renderer::render() {
 	steady_clock::time_point start = clock.now();
 	for (int y = 0; y < _image->h; y++) {
 		for (int x = 0; x < _image->w; x++) {
-			((Uint32*)_image->pixels)[y * _image->w + x] = calcPixelColor(x, _image->h - y);
+			Ray ray = _camera->getRay(x, _image->h - y);
+			((Uint32*)_image->pixels)[y * _image->w + x] = traceRay(ray);
 		}
 	}
 	steady_clock::time_point end = clock.now();
