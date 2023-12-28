@@ -5,7 +5,5 @@ Currently a work in progress.
 
 ## Latest Working Version:
 I've gotten basic object intersection working as seen here with the ground.
-
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene.png?raw=true)
-
-Render Time (Release Version): 8.724200 ms
+Render Time (Release Version): 14.8357 ms
