@@ -19,7 +19,9 @@ glm::vec3 Ray::getPoint(float t) const {
 	return _start + (t * _direction);
 }
 
+#ifdef _DEBUG
 void Ray::debug() const {
 	printf("start = (%f, %f, %f)\n", _start.x, _start.y, _start.z);
 	printf("dir   = (%f, %f, %f)\n", _direction.x, _direction.y, _direction.z);
 }
+#endif

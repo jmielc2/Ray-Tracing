@@ -39,7 +39,9 @@ bool Renderer::loadScene(const std::string& filename) {
 	_camera = new PerspCamera(glm::vec3(0.0f, 5.0f, 10.0f), 4.0f, _width, _height);
 	// _camera = new OrthoCamera(glm::vec3(0.0f, 5.0f, 10.0f), _width, _height);
 	_camera->setOrientation(90.0f, -10.0f);
-	// _camera->debug();
+#ifdef _DEBUG
+	_camera->debug();
+#endif
 	return true;
 }
 

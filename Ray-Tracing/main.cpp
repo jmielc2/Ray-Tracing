@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	SDL_Event event;
 	bool done = false;
 	while (!done) {
-		int start = Uint32(SDL_GetTicks64());
+		Uint64 start = SDL_GetTicks64();
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		SDL_UpdateWindowSurface(window);
-		int delay = int(1000.0f / 30.0f) - (int(SDL_GetTicks64()) - start);
+		int delay = int(1000.0f / 30.0f) - int(SDL_GetTicks64() - start);
 		if (delay > 0) {
 			SDL_Delay(delay);
 		}

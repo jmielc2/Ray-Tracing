@@ -10,12 +10,14 @@ Camera::Camera(const glm::vec3& position, int x, int y) : Entity(position), _img
 	return;
 }
 
+#ifdef _DEBUG
 void Camera::debug() const {
 	printf("position  = (%f, %f, %f)\n", _position.x, _position.y, _position.z);
 	printf("backward  = (%f, %f, %f)\n", _backward.x, _backward.y, _backward.z);
 	printf("right     = (%f, %f, %f)\n", _right.x, _right.y, _right.z);
 	printf("up        = (%f, %f, %f)\n", _up.x, _up.y, _up.z);
 }
+#endif
 
 /* Orthogonal Camera Class */
 
@@ -48,7 +50,9 @@ Ray PerspCamera::getRay(int pixelX, int pixelY) const {
 	return Ray(start, start - _viewpoint);
 }
 
+#ifdef _DEBUG
 void PerspCamera::debug() const {
 	printf("viewpoint = (%f, %f, %f)\n", _viewpoint.x, _viewpoint.y, _viewpoint.z);
 	Camera::debug();
 }
+#endif

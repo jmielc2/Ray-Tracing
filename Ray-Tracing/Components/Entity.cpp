@@ -5,7 +5,7 @@ Entity::Entity(const glm::vec3& position) : _position(position), _backward(-1.0f
 	return;
 }
 
-Entity::Entity(const glm::vec3& position, const glm::vec3& backward, const glm::vec3& right, const glm::vec3& up) : _position(position), _backward(backward), _right(right), _up(up) {
+Entity::Entity(const glm::vec3& position, const glm::vec3& backward, const glm::vec3& right) : _position(position), _backward(glm::normalize(backward)), _right(glm::normalize(right)), _up(glm::normalize(glm::cross(_backward, _right))) {
 	return;
 }
 
