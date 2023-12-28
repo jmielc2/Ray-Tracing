@@ -47,7 +47,7 @@ Ray PerspCamera::getRay(int pixelX, int pixelY) const {
 	float x = (_imgViewX / -200.0f) + (pixelX / 100.0f);
 	float y = (_imgViewY / -200.0f) + (pixelY / 100.0f);
 	glm::vec3 start = _position + (x * _right) + (y * _up);
-	return Ray(start, start - _viewpoint, _renderDist);
+	return Ray(_viewpoint, start - _viewpoint, _renderDist);
 }
 
 #ifdef _DEBUG
