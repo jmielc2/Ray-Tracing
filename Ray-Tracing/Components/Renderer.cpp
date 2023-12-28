@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Surface.h"
-#include <chrono>
 
 const int Renderer::default_width = 650;
 const int Renderer::default_height = 500;
@@ -37,7 +36,10 @@ bool Renderer::loadScene(const std::string& filename) {
 		return false;
 	}
 	_image = SDL_GetWindowSurface(_window);
-	_camera = new PerspCamera();
+	_camera = new PerspCamera(glm::vec3(0.0f, 5.0f, 10.0f), 4.0f, _width, _height);
+	// _camera = new OrthoCamera(glm::vec3(0.0f, 5.0f, 10.0f), _width, _height);
+	_camera->setOrientation(90.0f, -10.0f);
+	// _camera->debug();
 	return true;
 }
 
@@ -47,7 +49,7 @@ bool Renderer::render() {
 	steady_clock::time_point start = clock.now();
 	for (int y = 0; y < _image->h; y++) {
 		for (int x = 0; x < _image->w; x++) {
-			((Uint32*)_image->pixels)[y * _image->w + x] = calcPixelColor(x, y);
+			((Uint32*)_image->pixels)[y * _image->w + x] = calcPixelColor(x, _image->h - y);
 		}
 	}
 	steady_clock::time_point end = clock.now();

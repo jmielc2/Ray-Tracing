@@ -20,6 +20,7 @@ public:
 	inline float getMinBound() const { return _minBound; }
 	inline float getMaxBound() const { return _maxBound; }
 	glm::vec3 getPoint(float t) const;
+	void debug() const;
 };
 
 #endif

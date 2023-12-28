@@ -18,7 +18,7 @@ protected:
 	Entity(const glm::vec3& position);
 	Entity(const glm::vec3& position, const glm::vec3& backwards, const glm::vec3& right, const glm::vec3& up);
 public:
-	Entity& setOrientation(float yaw, float pitch);
+	virtual Entity& setOrientation(float yaw, float pitch, float roll = 0.0f);
 };
 
 #endif

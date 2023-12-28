@@ -11,12 +11,16 @@ class PerspCamera;
 #include "Entity.h"
 #include "Ray.h"
 
+/*
+For image view width and height, 100 corresponds to 1 in the global coordinate system.
+So setting camera x to 200 and y to 100 will result in a camera with an image view of x dimension 2 and y dimension 1.
+*/
+
 class Camera : public Entity {
 protected:
 	int _imgViewX;
 	int _imgViewY;
 public:
-	Camera(const glm::vec3& position);
 	Camera(const glm::vec3& position, int x, int y);
 
 	virtual Ray getRay(int pixelX, int pixelY) const = 0;
@@ -26,8 +30,6 @@ public:
 class OrthoCamera : public Camera {
 protected:
 public:
-	OrthoCamera();
-	OrthoCamera(const glm::vec3& position);
 	OrthoCamera(const glm::vec3& position, int x, int y);
 	
 	virtual Ray getRay(int pixelX, int pixelY) const;
@@ -38,11 +40,9 @@ protected:
 	glm::vec3 _viewpoint;
 	float _focalDist;
 public:
-	PerspCamera();
-	PerspCamera(const glm::vec3& position, float focalDist);
 	PerspCamera(const glm::vec3& position, float focalDist, int x, int y);
 	
-	PerspCamera& setOrientation(float yaw, float pitch);
+	virtual PerspCamera& setOrientation(float yaw, float pitch, float roll = 0.0f);
 	virtual Ray getRay(int pixelX, int pixelY) const;
 	virtual void debug() const;
 };
