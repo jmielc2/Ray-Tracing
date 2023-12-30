@@ -87,7 +87,7 @@ bool Renderer::loadScene(const std::string& filename) {
 
 	// Setup Camera
 	_camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 2.0f), 4.0f, _width, _height, 15.0f);
-	_camera->setOrientation(90.0f, 0.0f);
+	_camera->setOrientation(90.0f, 0.0f, 20.0f);
 
 	// Setup Lights
 	_lights.push_back(new Light(glm::vec3(5.0f, 13.0f, 15.0f)));
