@@ -4,16 +4,16 @@ This is my implementation of a ray tracing program that is capable of rendering 
 Currently a work in progress.
 
 ## Latest Working Version:
-I've gotten basic shading working now with the Lambertian Shading technique.
+I've gotten shading working now with shadows, reflections, and the Blinn-Phong Shading technique.
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-1.png?raw=true)
 
-Render Time (Release Version): 56.827301 ms
+Render Time (Release Version): 104.116096 ms
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-2.png?raw=true)
 
-Render Time (Release Version): 181.981109 ms
+Render Time (Release Version): 254.087005 ms
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-3.png?raw=true)
 
-Render Time  (Release Version): 84.017692 ms
+Render Time  (Release Version): 383.144104 ms

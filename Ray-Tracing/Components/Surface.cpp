@@ -3,13 +3,13 @@
 
 /* Abstract Surface Class */
 
-Surface::Surface(const glm::vec3& position) : Entity(position) {
+Surface::Surface(const glm::vec3& position, Surface::SURFACE_TYPES type, float reflectivity) : Entity(position), _phongExp(type), _reflectivity(reflectivity) {
 	return;
 }
 
 /* Ground Surface Class */
 
-Ground::Ground(const glm::vec3& color) : Surface(glm::vec3(0.0f, 0.0f, 0.0f)), _baseColor(color) {
+Ground::Ground(const glm::vec3& color, Surface::SURFACE_TYPES type, float reflectivity) : Surface(glm::vec3(0.0f, 0.0f, 0.0f), type, reflectivity), _baseColor(color) {
 	return;
 }
 
@@ -45,7 +45,7 @@ glm::vec3 Ground::getBaseColor(const glm::vec3& point) const {
 
 /* Sphere Surface Class */
 
-Sphere::Sphere(const glm::vec3& center, float radius, const glm::vec3& color) : Surface(center), _radius(radius), _baseColor(color) {
+Sphere::Sphere(const glm::vec3& center, float radius, const glm::vec3& color, Surface::SURFACE_TYPES type, float reflectivity) : Surface(center, type, reflectivity), _radius(radius), _baseColor(color) {
 	return;
 }
 

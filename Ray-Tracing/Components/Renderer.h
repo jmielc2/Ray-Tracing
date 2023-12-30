@@ -17,18 +17,18 @@ protected:
 	static const int default_width;
 	static const int default_height;
 	static const float default_ambient_factor;
-	static const Uint32 default_background_color;
+	static const glm::vec3 default_background_color;
 	int _width;
 	int _height;
 	float _ambient_light_factor;
-	Uint32 _background_color;
+	glm::vec3 _background_color;
 	SDL_Window* _window;
 	SDL_Surface* _image;
 	Camera* _camera;
 	std::vector<Surface*> _objects;
 	std::vector<Light*> _lights;
 
-	Uint32 traceRay(const Ray& ray, int bounces = 1);
+	glm::vec3 traceRay(const Ray& ray, int bounces = 1);
 public:
 	Renderer();
 	~Renderer();
