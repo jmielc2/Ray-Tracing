@@ -1,7 +1,7 @@
 #include "../stdafx.h"
 #include "Renderer.h"
 #include "Camera.h"
-#include "Entity.h"
+#include "Light.h"
 #include "Surface.h"
 
 const int Renderer::default_width = 650;
@@ -18,6 +18,9 @@ Renderer::Renderer() : _width(default_width), _height(default_height), _window(n
 Renderer::~Renderer() {
 	for (Surface* obj : _objects) {
 		delete obj;
+	}
+	for (Light* light : _lights) {
+		delete light;
 	}
 	delete _camera;
 	SDL_DestroyWindow(_window);
@@ -54,10 +57,14 @@ bool Renderer::loadScene(const std::string& filename) {
 	}
 	_image = SDL_GetWindowSurface(_window);
 
+	/* Configuration is currently hard coded into the loading process. Will be updated later to be loaded from file. */
+
 	// Setup Camera
-	_camera = new PerspCamera(glm::vec3(0.0f, 2.0f, 3.0f), 4.0f, _width, _height, 15.0f);
-	// _camera = new OrthoCamera(glm::vec3(0.0f, 5.0f, 10.0f), _width, _height, 500.0f);
-	_camera->setOrientation(90.0f, -30.0f);
+	_camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 2.0f), 4.0f, _width, _height, 15.0f);
+	_camera->setOrientation(90.0f, 0.0f);
+
+	// Setup Lights
+	_lights.push_back(new Light(glm::vec3(0.0f, 0.0f, 10.0f)));
 
 	// Setup Objects
 	_objects.push_back(new Sphere(glm::vec3(0.0f, 1.5f, 0.0f), 1.5f, glm::vec3(230.0f, 38.0f, 0.0f)));

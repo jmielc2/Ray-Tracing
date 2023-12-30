@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="Components\Camera.cpp" />
     <ClCompile Include="Components\Entity.cpp" />
+    <ClCompile Include="Components\Light.cpp" />
     <ClCompile Include="Components\Ray.cpp" />
     <ClCompile Include="Components\Renderer.cpp" />
     <ClCompile Include="Components\Surface.cpp" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="Components\Camera.h" />
     <ClInclude Include="Components\Entity.h" />
+    <ClInclude Include="Components\Light.h" />
     <ClInclude Include="Components\Ray.h" />
     <ClInclude Include="Components\Renderer.h" />
     <ClInclude Include="Components\Surface.h" />

@@ -9,7 +9,7 @@ class Renderer;
 #include <string>
 #include <vector>
 #include "Camera.h"
-#include "Entity.h"
+#include "Light.h"
 #include "Surface.h"
 
 class Renderer {
@@ -22,7 +22,7 @@ protected:
 	SDL_Surface* _image;
 	Camera* _camera;
 	std::vector<Surface*> _objects;
-	std::vector<Entity*> _lights;
+	std::vector<Light*> _lights;
 
 	Uint32 traceRay(const Ray& ray, int bounces = 1);
 public:
