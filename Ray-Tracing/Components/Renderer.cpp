@@ -6,8 +6,14 @@
 
 const int Renderer::default_width = 650;
 const int Renderer::default_height = 500;
+const float Renderer::default_ambient_factor = 0.1f;
+const Uint32 Renderer::default_background_color = 0xff000000;
 
-Renderer::Renderer() : _width(default_width), _height(default_height), _window(nullptr), _image(nullptr), _camera(nullptr) {
+static inline Uint32 convertVectorToColor(const glm::vec3& color) {
+	return (0xff000000 | (Uint32(color.r) << 16) | (Uint32(color.g) << 8) | Uint32(color.b));
+}
+
+Renderer::Renderer() : _width(default_width), _height(default_height), _ambient_light_factor(default_ambient_factor), _background_color(default_background_color), _window(nullptr), _image(nullptr), _camera(nullptr) {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Log("SDL failed to initialize: %s\n", SDL_GetError());
 		std::exit(1);
@@ -41,10 +47,30 @@ Uint32 Renderer::traceRay(const Ray& ray, int bounces) {
 
 	// Calculate the object's color at point of intersection (if object of intersection exists)
 	if (closest) {
-		glm::vec3 color = closest->getBaseColor(ray.getPoint(t));
-		return (0xff000000 | (Uint32(color.r) << 16) | (Uint32(color.g) << 8) | Uint32(color.b));
+		// Lambertian Shading Implementation
+		glm::vec3 point = ray.getPoint(t);
+		glm::vec3 normal = closest->getNormal(point);
+		glm::vec3 base = closest->getBaseColor(point);
+		glm::vec3 color = _ambient_light_factor * base;
+		for (Light* light : _lights) {
+			glm::vec3 lightDir = light->getLightDirection(point);
+			// Check if in shadow
+			bool blocked = false;
+			for (Surface* obj : _objects) {
+				if (obj == closest || obj->getIntersectionParam(Ray(point, lightDir)) < 0.0f) {
+					continue;
+				}
+				blocked = true;
+				break;
+			}
+			if (blocked) {
+				continue;
+			}
+			color = glm::clamp(base * (light->getIntensity() * std::max(0.0f, glm::dot(normal, lightDir))), color, glm::vec3(255.0f, 255.0f, 255.0f));
+		}
+		return convertVectorToColor(color);
 	}
-	return 0xff000000;
+	return _background_color;
 }
 
 bool Renderer::loadScene(const std::string& filename) {
@@ -64,10 +90,11 @@ bool Renderer::loadScene(const std::string& filename) {
 	_camera->setOrientation(90.0f, 0.0f);
 
 	// Setup Lights
-	_lights.push_back(new Light(glm::vec3(0.0f, 0.0f, 10.0f)));
+	_lights.push_back(new Light(glm::vec3(5.0f, 13.0f, 15.0f)));
+
 
 	// Setup Objects
-	_objects.push_back(new Sphere(glm::vec3(0.0f, 1.5f, 0.0f), 1.5f, glm::vec3(230.0f, 38.0f, 0.0f)));
+	_objects.push_back(new Sphere(glm::vec3(0.0f, 2.0f, 1.0f), 1.5f, glm::vec3(230.0f, 38.0f, 0.0f)));
 	_objects.push_back(new Ground(glm::vec3(255.0f, 255.0f, 255.0f)));
 	return true;
 }

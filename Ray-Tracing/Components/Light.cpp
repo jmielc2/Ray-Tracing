@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Light.h"
 
-Light::Light(const glm::vec3& position, const glm::vec3& color, float intensity) : Entity(position), _lightColor(color), _intensity(intensity) {
+Light::Light(const glm::vec3& position, float intensity, const glm::vec3& color) : Entity(position), _lightColor(color), _intensity(intensity) {
 	return;
 }

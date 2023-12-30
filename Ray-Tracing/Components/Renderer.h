@@ -16,8 +16,12 @@ class Renderer {
 protected:
 	static const int default_width;
 	static const int default_height;
+	static const float default_ambient_factor;
+	static const Uint32 default_background_color;
 	int _width;
 	int _height;
+	float _ambient_light_factor;
+	Uint32 _background_color;
 	SDL_Window* _window;
 	SDL_Surface* _image;
 	Camera* _camera;

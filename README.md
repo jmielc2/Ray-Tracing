@@ -4,8 +4,13 @@ This is my implementation of a ray tracing program that is capable of rendering 
 Currently a work in progress.
 
 ## Latest Working Version:
-I've gotten basic object intersection working as seen here with the ground and sphere. Shading is next on the TODO list.
+I've gotten basic shading working now with the Lambertian Shading technique.
 
-![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene.png?raw=true)
+![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-1.png?raw=true)
 
-Render Time (Release Version): 42.069 ms
+Render Time (Release Version): 56.084499 ms
+
+![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-2.png?raw=true)
+
+Render Time (Release Version): 181.981109 ms
+
