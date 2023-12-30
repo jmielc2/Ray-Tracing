@@ -86,8 +86,11 @@ bool Renderer::loadScene(const std::string& filename) {
 	/* Configuration is currently hard coded into the loading process. Will be updated later to be loaded from file. */
 
 	// Setup Camera
-	_camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 2.0f), 4.0f, _width, _height, 15.0f);
-	_camera->setOrientation(90.0f, 0.0f, 20.0f);
+	// _camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 2.0f), 4.0f, _width, _height, 15.0f);
+	_camera = new OrthoCamera(glm::vec3(0.0f, 6.0f, 5.0f), _width, _height, 15.0f);
+
+	_camera->setOrientation(90.0f, -45.0f, 0.0f);
+
 
 	// Setup Lights
 	_lights.push_back(new Light(glm::vec3(5.0f, 13.0f, 15.0f)));

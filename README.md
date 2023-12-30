@@ -6,7 +6,7 @@ Currently a work in progress.
 ## Latest Working Version:
 I've gotten basic shading working now with the Lambertian Shading technique.
 
-![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene.png?raw=true)
+![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-1.png?raw=true)
 
 Render Time (Release Version): 56.827301 ms
 
@@ -14,3 +14,6 @@ Render Time (Release Version): 56.827301 ms
 
 Render Time (Release Version): 181.981109 ms
 
+![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-3.png?raw=true)
+
+Render Time  (Release Version): 84.017692 ms
