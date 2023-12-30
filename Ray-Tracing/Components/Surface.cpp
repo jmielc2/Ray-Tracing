@@ -50,6 +50,18 @@ Sphere::Sphere(const glm::vec3& center, float radius, const glm::vec3& color) : 
 }
 
 float Sphere::getIntersectionParam(const Ray& ray) const {
+	const glm::vec3 dir = ray.getDirection();
+	const glm::vec3 centerToRay = ray.getStart() - _position;
+	double discriminant = std::pow(glm::dot(dir, centerToRay), 2.0f) - (std::pow(glm::length(centerToRay), 2.0) - std::pow(_radius, 2.0));
+	if (discriminant < 0.0) {
+		return -1.0f;
+	}
+	float a = glm::dot(-1.0f * dir, centerToRay);
+	float b = std::sqrt(float(discriminant));
+	float t = std::min(a + b, a - b);
+	if (ray.isWithinBounds(t)) {
+		return t;
+	}
 	return -1.0f;
 }
 

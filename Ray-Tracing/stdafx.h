@@ -8,5 +8,10 @@
 #include <SDL.h>
 #include <glm.hpp>
 #include <chrono>
+#include <algorithm>
+
+#ifdef _DEBUG
+#include <iostream>
+#endif
 
 #endif

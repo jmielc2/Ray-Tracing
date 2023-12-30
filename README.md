@@ -4,7 +4,7 @@ This is my implementation of a ray tracing program that is capable of rendering 
 Currently a work in progress.
 
 ## Latest Working Version:
-I've gotten basic object intersection working as seen here with the ground.
+I've gotten basic object intersection working as seen here with the ground and sphere. Shading is next on the TODO list.
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene.png?raw=true)
 

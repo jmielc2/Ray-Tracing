@@ -25,7 +25,6 @@ protected:
 	std::vector<Entity*> _lights;
 
 	Uint32 traceRay(const Ray& ray, int bounces = 1);
-	Uint32 calcPixelColor(int x, int y);
 public:
 	Renderer();
 	~Renderer();

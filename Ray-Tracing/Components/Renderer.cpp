@@ -55,16 +55,13 @@ bool Renderer::loadScene(const std::string& filename) {
 	_image = SDL_GetWindowSurface(_window);
 
 	// Setup Camera
-	_camera = new PerspCamera(glm::vec3(0.0f, 2.0f, 7.0f), 4.0f, _width, _height, 12.5f);
+	_camera = new PerspCamera(glm::vec3(0.0f, 2.0f, 3.0f), 4.0f, _width, _height, 15.0f);
 	// _camera = new OrthoCamera(glm::vec3(0.0f, 5.0f, 10.0f), _width, _height, 500.0f);
-	_camera->setOrientation(45.0f, -35.0f);
+	_camera->setOrientation(90.0f, -30.0f);
 
 	// Setup Objects
+	_objects.push_back(new Sphere(glm::vec3(0.0f, 1.5f, 0.0f), 1.5f, glm::vec3(230.0f, 38.0f, 0.0f)));
 	_objects.push_back(new Ground(glm::vec3(255.0f, 255.0f, 255.0f)));
-
-#ifdef _DEBUG
-	_camera->debug();
-#endif
 	return true;
 }
 
