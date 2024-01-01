@@ -33,11 +33,14 @@ Renderer::~Renderer() {
 	SDL_Quit();
 }
 
-glm::vec3 Renderer::traceRay(const Ray& ray, int bounces) {
+glm::vec3 Renderer::traceRay(const Ray& ray, int bounces, Surface* source) {
 	// Find closest object of intersection
 	Surface* closest = nullptr;
 	float t = INFINITY;
 	for (Surface* obj : _objects) {
+		if (obj == source) {
+			continue;
+		}
 		float intersection = obj->getIntersectionParam(ray);
 		if (intersection >= 0.0f && intersection < t) {
 			t = intersection;
@@ -78,7 +81,7 @@ glm::vec3 Renderer::traceRay(const Ray& ray, int bounces) {
 		if (bounces && reflectivity > 0.0f) {
 			glm::vec3 dir = ray.getDirection();
 			glm::vec3 reflectDir = dir - (2 * glm::dot(dir, normal) * normal);
-			color = (reflectivity * traceRay(Ray(point, reflectDir), bounces - 1)) + ((1.0f - reflectivity) * color);
+			color = (reflectivity * traceRay(Ray(point, reflectDir, ray.getMaxBound()), bounces - 1, closest)) + ((1.0f - reflectivity) * color);
 		}
 		return glm::clamp(color, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(255.0f, 255.0f, 255.0f));
 	}

@@ -28,7 +28,7 @@ protected:
 	std::vector<Surface*> _objects;
 	std::vector<Light*> _lights;
 
-	glm::vec3 traceRay(const Ray& ray, int bounces = 1);
+	glm::vec3 traceRay(const Ray& ray, int bounces = 1, Surface* source = nullptr);
 public:
 	Renderer();
 	~Renderer();
