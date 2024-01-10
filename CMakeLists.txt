@@ -10,11 +10,8 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(glm REQUIRED)
 
-get_cmake_property("vars" VARIABLES)
-foreach("var" ${vars})
-    message(${var} = ${${var}})
-endforeach()
-
+# SDL2, SDL2_image, and glm imported include directories don't work (;_;)
+# Added manually instead
 include_directories("/usr/local/include/SDL2/")
 include_directories("/usr/local/include/glm/")
 link_directories("/usr/local/lib/")
