@@ -5,7 +5,7 @@
 #include "Surface.h"
 #include <SDL_thread.h>
 
-#define NUM_THREADS 10
+#define NUM_THREADS 8
 
 const int Renderer::default_width = 650;
 const int Renderer::default_height = 500;
@@ -120,8 +120,8 @@ bool Renderer::loadScene(const std::string& filename) {
 	_background_color = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	// Setup Camera
-	// _camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 3.0f), 4.0f, _width, _height, 18.0f);
-	_camera = new OrthoCamera(glm::vec3(0.0f, 3.0f, 3.5f), _width, _height, 15.0f);
+	_camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 3.0f), 4.0f, _width, _height, 18.0f);
+	// _camera = new OrthoCamera(glm::vec3(0.0f, 3.0f, 3.5f), _width, _height, 15.0f);
 	_camera->setOrientation(90.0f, -45.0f, 0.0f);
 
 	// Setup Lights
