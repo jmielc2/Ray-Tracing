@@ -19,6 +19,8 @@ protected:
 	float _reflectivity;
 	Surface(const glm::vec3& position, Surface::SURFACE_TYPES type = Surface::SURFACE_TYPES::SHINY, float reflectivity = 0.0f);
 public:
+	virtual ~Surface();
+	
 	inline float getReflectivity() const { return _reflectivity; }
 	inline float getPhongExponent() const { return float(_phongExp); }
 	virtual glm::vec3 getNormal(const glm::vec3& point) const = 0;

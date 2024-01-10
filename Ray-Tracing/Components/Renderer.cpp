@@ -3,6 +3,9 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Surface.h"
+#include <SDL_thread.h>
+
+#define NUM_THREADS 10
 
 const int Renderer::default_width = 650;
 const int Renderer::default_height = 500;
@@ -88,6 +91,19 @@ glm::vec3 Renderer::traceRay(const Ray& ray, int bounces, Surface* source) {
 	return _background_color;
 }
 
+int Renderer::processSection(void* data) {
+	SectionBounds* bounds = (SectionBounds*) data;
+	Renderer* r = bounds->renderer;
+	for (int y = bounds->yMin; y <= bounds->yMax; y++) {
+		for (int x = 0; x < r->_image->w; x++) {
+			Ray ray = r->_camera->getRay(x, r->_image->h - y);
+			((Uint32*)r->_image->pixels)[y * r->_image->w + x] = convertVectorToColor(r->traceRay(ray, 3));
+		}
+	}
+	delete bounds;
+	return 0;
+}
+
 bool Renderer::loadScene(const std::string& filename) {
 	// TODO: Implement scene configuration
 
@@ -124,11 +140,18 @@ bool Renderer::render() {
 	using namespace std::chrono;
 	high_resolution_clock clock;
 	steady_clock::time_point start = clock.now();
-	for (int y = 0; y < _image->h; y++) {
-		for (int x = 0; x < _image->w; x++) {
-			Ray ray = _camera->getRay(x, _image->h - y);
-			((Uint32*)_image->pixels)[y * _image->w + x] = convertVectorToColor(traceRay(ray, 3));
+	SDL_Thread* threads[NUM_THREADS];
+	const int span = _image->h / NUM_THREADS;
+	for (int i = 0; i < NUM_THREADS; i++) {
+		SectionBounds* data = new SectionBounds(i * span, ((i + 1) * span) - 1, this);
+		threads[i] = SDL_CreateThread(Renderer::processSection, "Section Thread", data);
+		if (!threads[i]) {
+			SDL_Log("SDL failed to create thread.");
+			std::exit(1);
 		}
+	}
+	for (int i = 0; i < NUM_THREADS; i++) {
+		SDL_WaitThread(threads[i], NULL);
 	}
 	steady_clock::time_point end = clock.now();
 	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count());

@@ -7,6 +7,10 @@ Surface::Surface(const glm::vec3& position, Surface::SURFACE_TYPES type, float r
 	return;
 }
 
+Surface::~Surface() {
+	return;
+}
+
 /* Ground Surface Class */
 
 Ground::Ground(const glm::vec3& color, Surface::SURFACE_TYPES type, float reflectivity) : Surface(glm::vec3(0.0f, 0.0f, 0.0f), type, reflectivity), _baseColor(color) {

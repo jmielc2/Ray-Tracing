@@ -10,6 +10,10 @@ Camera::Camera(const glm::vec3& position, int x, int y, float renderDist) : Enti
 	return;
 }
 
+Camera::~Camera() {
+	return;
+}
+
 #ifdef _DEBUG
 void Camera::debug() const {
 	printf("position  = (%f, %f, %f)\n", _position.x, _position.y, _position.z);
@@ -26,8 +30,8 @@ OrthoCamera::OrthoCamera(const glm::vec3& position, int x, int y, float renderDi
 }
 
 Ray OrthoCamera::getRay(int pixelX, int pixelY) const {
-	float x = (_imgViewX / -200.0f) + (pixelX / 100.0f);
-	float y = (_imgViewY / -200.0f) + (pixelY / 100.0f);
+	float x = (_imgViewX / -200.0f) + ((float(pixelX) + 0.5f) / 100.0f);
+	float y = (_imgViewY / -200.0f) + ((float(pixelY) + 0.5f) / 100.0f);
 	return Ray(_position + (x * _right) + (y * _up), -1.0f * _backward, _renderDist);
 }
 

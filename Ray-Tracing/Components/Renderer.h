@@ -28,7 +28,15 @@ protected:
 	std::vector<Surface*> _objects;
 	std::vector<Light*> _lights;
 
+	struct SectionBounds {
+		SectionBounds(int min, int max, Renderer* renderer) : yMin(min), yMax(max), renderer(renderer) {}
+		int yMin;
+		int yMax;
+		Renderer* renderer;
+	};
+
 	glm::vec3 traceRay(const Ray& ray, int bounces = 1, Surface* source = nullptr);
+	static int processSection(void* data);
 public:
 	Renderer();
 	~Renderer();

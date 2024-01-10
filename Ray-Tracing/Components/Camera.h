@@ -23,6 +23,7 @@ protected:
 	float _renderDist;
 public:
 	Camera(const glm::vec3& position, int x, int y, float renderDist = INFINITY);
+	virtual ~Camera();
 
 	virtual Ray getRay(int pixelX, int pixelY) const = 0;
 #ifdef _DEBUG
