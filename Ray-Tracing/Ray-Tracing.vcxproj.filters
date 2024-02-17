@@ -65,15 +65,16 @@
     <ClInclude Include="Components\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="scene.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
+    <ClInclude Include="extern\nlohmann\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
       <Filter>Docs</Filter>
+    </None>
+    <None Include="scene.json">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@ protected:
 	Entity(const glm::vec3& position);
 public:
 	virtual Entity& setOrientation(float yaw, float pitch, float roll = 0.0f);
+	inline glm::vec3 getPosition() const { return _position; }
 };
 
 #endif

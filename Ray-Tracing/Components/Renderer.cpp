@@ -3,7 +3,12 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Surface.h"
+#include <fstream>
 #include <SDL_thread.h>
+#include <iostream>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 #define NUM_THREADS 8
 
@@ -55,6 +60,9 @@ glm::vec3 Renderer::traceRay(const Ray& ray, int bounces, Surface* source) {
 	if (closest) {
 		// Phong Shading Implementation
 		glm::vec3 point = ray.getPoint(t);
+		if (glm::distance(point, _camera->getPosition()) > _camera->getMaxRenderDist()) {
+			return _background_color;
+		}
 		glm::vec3 normal = closest->getNormal(point);
 		glm::vec3 base = closest->getBaseColor(point);
 		glm::vec3 color = _ambient_light_factor * base;
@@ -84,7 +92,7 @@ glm::vec3 Renderer::traceRay(const Ray& ray, int bounces, Surface* source) {
 		if (bounces && reflectivity > 0.0f) {
 			glm::vec3 dir = ray.getDirection();
 			glm::vec3 reflectDir = dir - (2 * glm::dot(dir, normal) * normal);
-			color = (reflectivity * traceRay(Ray(point, reflectDir, ray.getMaxBound()), bounces - 1, closest)) + ((1.0f - reflectivity) * color);
+			color = (reflectivity * traceRay(Ray(point, reflectDir, INFINITY), bounces - 1, closest)) + ((1.0f - reflectivity) * color);
 		}
 		return glm::clamp(color, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(255.0f, 255.0f, 255.0f));
 	}
@@ -104,8 +112,104 @@ int Renderer::processSection(void* data) {
 	return 0;
 }
 
+bool Renderer::configure(const std::string& filename) {
+	try {
+		json data = json::parse(std::ifstream(filename));
+
+		// Setup Environment
+		{
+			json env = data["environment"];
+			json bc = env["background_color"];
+			_background_color = glm::vec3(bc[0], bc[1], bc[2]);
+			_width = env["width"];
+			_height = env["height"];
+		}
+
+		// Setup Camera
+		{
+			json cam = data["camera"];
+			json pos = cam["position"];
+			if (cam["type"] == "orthographic") {
+				_camera = new OrthoCamera(
+					glm::vec3(pos[0], pos[1], pos[2]),
+					_width, _height, cam["renderDist"]
+				);
+			} else if (cam["type"] == "perspective") {
+				_camera = new PerspCamera(
+					glm::vec3(pos[0], pos[1], pos[2]),
+					cam["focalDist"], _width, _height, cam["renderDist"]
+				);
+			} else {
+				SDL_Log("Camera type '%s' is invalid.", cam["type"].get<std::string>());
+				return false;
+			}
+			json ori = cam["orientation"];
+			_camera->setOrientation(ori["yaw"], ori["pitch"], ori["roll"]);
+		}
+		
+		// Setup Lights
+		{
+			json lights = data["lights"];
+			for (const json& light : lights) {
+				json pos = light["position"];
+				json color = light["color"];
+				_lights.push_back(new Light(
+					glm::vec3(pos[0], pos[1], pos[2]),
+					light["intensity"],
+					glm::vec3(color[0], color[1], color[2])
+				));
+			}
+		}
+
+		// Setup Objects
+		{
+			json objs = data["objects"];
+			for (const json& obj : objs) {
+				json color = obj["color"];
+				Surface::SURFACE_TYPES st;
+				if (obj["surfaceType"] == "eggshell") {
+					st = Surface::SURFACE_TYPES::EGGSHELL;
+				} else if (obj["surfaceType"] == "shiny") {
+					st = Surface::SURFACE_TYPES::SHINY;
+				} else if (obj["surfaceType"] == "glossy") {
+					st = Surface::SURFACE_TYPES::GLOSSY;
+				} else if (obj["surfaceType"] == "mirror") {
+					st = Surface::SURFACE_TYPES::MIRROR;
+				} else {
+					SDL_Log("Object surface type '%s' is invalid.", obj["surfaceType"].get<std::string>());
+					return false;
+				}
+				if (obj["type"] == "sphere") {
+					json pos = obj["position"];
+					_objects.push_back(new Sphere(
+						glm::vec3(pos[0], pos[1], pos[2]),
+						obj["radius"],
+						glm::vec3(color[0], color[1], color[2]),
+						st, obj["reflectivity"]
+					));
+				} else if(obj["type"] == "ground") {
+					_objects.push_back(new Ground(
+						glm::vec3(color[0], color[1], color[2]),
+						st, obj["reflectivity"]
+					));
+				} else {
+					SDL_Log("Object type '%s' is invalid.", obj["type"].get<std::string>());
+					return false;
+				}
+			}
+		}
+	} catch (std::exception e) {
+		SDL_Log("Error parsing scene JSON. Make sure your JSON file is formatted properly.");
+		return false;
+	}
+	return true;
+}
+
 bool Renderer::loadScene(const std::string& filename) {
-	// TODO: Implement scene configuration
+	// Configure Renderer from scene description
+	if (!this->configure(filename)) {
+		return false;
+	}
 
 	_window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_HIDDEN);
 	if (!_window) {
@@ -113,26 +217,6 @@ bool Renderer::loadScene(const std::string& filename) {
 		return false;
 	}
 	_image = SDL_GetWindowSurface(_window);
-
-	/* Configuration is currently hard coded into the loading process. Will be updated later to be loaded from file. */
-
-	// Setup Environment
-	_background_color = glm::vec3(0.0f, 0.0f, 0.0f);
-
-	// Setup Camera
-	// _camera = new PerspCamera(glm::vec3(0.0f, 1.5f, 3.0f), 4.0f, _width, _height, 18.0f);
-	_camera = new OrthoCamera(glm::vec3(0.0f, 3.0f, 3.5f), _width, _height, 15.0f);
-	_camera->setOrientation(90.0f, -45.0f, 0.0f);
-
-	// Setup Lights
-	_lights.push_back(new Light(glm::vec3(-10.0f, 13.0f, 10.0f)));
-	_lights.push_back(new Light(glm::vec3(10.0f, 8.0f, 8.0f), 0.5f));
-	_lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 10.0f), 0.7f));
-
-	// Setup Objects
-	_objects.push_back(new Sphere(glm::vec3(-1.5f, 1.0f, 1.5f), 1.0f, glm::vec3(30.0f, 151.0f, 225.0f), Surface::SURFACE_TYPES::SHINY));
-	_objects.push_back(new Sphere(glm::vec3(1.5f, 1.0f, 2.0f), 1.0f, glm::vec3(100.0f, 100.0f, 100.0f), Surface::SURFACE_TYPES::GLOSSY, 0.85));
-	_objects.push_back(new Ground(glm::vec3(255.0f, 255.0f, 255.0f)));
 	return true;
 }
 

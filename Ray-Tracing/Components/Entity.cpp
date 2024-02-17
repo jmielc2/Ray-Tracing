@@ -14,3 +14,4 @@ Entity& Entity::setOrientation(float yaw, float pitch, float roll) {
 	_up = glm::normalize(glm::cross(_backward, _right));
 	return *this;
 }
+

@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[]) {
 	Renderer renderer;
-	if (!renderer.loadScene("scene.txt")) {
+	if (!renderer.loadScene("scene.json")) {
 		return 1;
 	}
 	if (!renderer.render()) {

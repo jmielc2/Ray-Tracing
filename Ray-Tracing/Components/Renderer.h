@@ -35,6 +35,7 @@ protected:
 		Renderer* renderer;
 	};
 
+	bool configure(const std::string& filename);
 	glm::vec3 traceRay(const Ray& ray, int bounces = 1, Surface* source = nullptr);
 	static int processSection(void* data);
 public:

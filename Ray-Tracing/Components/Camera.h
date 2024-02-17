@@ -26,6 +26,7 @@ public:
 	virtual ~Camera();
 
 	virtual Ray getRay(int pixelX, int pixelY) const = 0;
+	inline float getMaxRenderDist() const { return _renderDist; }
 #ifdef _DEBUG
 	virtual void debug() const;
 #endif
