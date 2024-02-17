@@ -1,8 +1,8 @@
 {
   "environment": {
     "background_color": [ 0.0, 0.0, 0.0 ],
-    "width": 650,
-    "height": 500
+    "width": 750,
+    "height": 600
   },
 
   "camera": {
@@ -54,7 +54,7 @@
     },
     {
       "type": "ground",
-      "color": [ 200.0, 200.0, 200.0 ],
+      "color": [ 240.0, 240.0, 240.0 ],
       "surfaceType": "eggshell",
       "reflectivity": 0.1
     }
