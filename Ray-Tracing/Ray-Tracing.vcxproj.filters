@@ -76,13 +76,11 @@
     <None Include="scenes\scene-3.json">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Xsd Include="scenes\scene-2.json">
+    <None Include="scenes\scene-1.json">
       <Filter>Resource Files</Filter>
-    </Xsd>
-    <Xsd Include="scenes\scene-1.json">
+    </None>
+    <None Include="scenes\scene-2.json">
       <Filter>Resource Files</Filter>
-    </Xsd>
+    </None>
   </ItemGroup>
 </Project>
