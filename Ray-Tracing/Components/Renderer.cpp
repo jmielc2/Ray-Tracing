@@ -114,7 +114,12 @@ int Renderer::processSection(void* data) {
 
 bool Renderer::configure(const std::string& filename) {
 	try {
-		json data = json::parse(std::ifstream(filename));
+		std::ifstream file(filename);
+		if (!file.is_open()) {
+			SDL_Log("File '%s' not found.", filename.c_str());
+			return false;
+		}
+		json data = json::parse(file);
 
 		// Setup Environment
 		{

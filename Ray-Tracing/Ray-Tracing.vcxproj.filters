@@ -73,8 +73,16 @@
     <None Include="..\README.md">
       <Filter>Docs</Filter>
     </None>
-    <None Include="scene.json">
+    <None Include="scenes\scene-3.json">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="scenes\scene-2.json">
+      <Filter>Resource Files</Filter>
+    </Xsd>
+    <Xsd Include="scenes\scene-1.json">
+      <Filter>Resource Files</Filter>
+    </Xsd>
   </ItemGroup>
 </Project>

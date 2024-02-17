@@ -3,8 +3,12 @@
 #include "Components/Renderer.h"
 
 int main(int argc, char* argv[]) {
+	if (argc != 2) {
+		SDL_Log("Usage: %s <filename>", argv[0]);
+		return 0;
+	}
 	Renderer renderer;
-	if (!renderer.loadScene("scene.json")) {
+	if (!renderer.loadScene(std::string(argv[1]))) {
 		return 1;
 	}
 	if (!renderer.render()) {

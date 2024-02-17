@@ -1,0 +1,52 @@
+﻿{
+  "environment": {
+    "background_color": [ 0.0, 0.0, 0.0 ],
+    "width": 750,
+    "height": 600
+  },
+
+  "camera": {
+    "type": "perspective",
+    "position": [ 0.0, 1.0, 3.5 ],
+    "orientation": {
+      "yaw": 90.0,
+      "pitch": -25.0,
+      "roll": 0.0
+    },
+    "renderDist": 20.0,
+    "focalDist": 4.0
+  },
+
+  "lights": [
+    {
+      "position": [ -10.0, 13.0, 10.0 ],
+      "intensity": 1.0,
+      "color": [ 255.0, 255.0, 255.0 ]
+    }
+  ],
+
+  "objects": [
+    {
+      "type": "sphere",
+      "position": [ -1.25, 1.0, 2.0 ],
+      "color": [ 255.0, 151.0, 40.0 ],
+      "radius": 1.0,
+      "reflectivity": 0.0,
+      "surfaceType": "eggshell"
+    },
+    {
+      "type": "sphere",
+      "position": [ 1.25, 1.0, 2.0 ],
+      "color": [ 100.0, 100.0, 100.0 ],
+      "radius": 1.0,
+      "reflectivity": 0.95,
+      "surfaceType": "shiny"
+    },
+    {
+      "type": "ground",
+      "color": [ 200.0, 200.0, 200.0 ],
+      "surfaceType": "eggshell",
+      "reflectivity": 0.1
+    }
+  ]
+}
