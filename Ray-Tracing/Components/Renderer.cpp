@@ -87,7 +87,6 @@ glm::vec3 Renderer::traceRay(const Ray& ray, int bounces, Surface* source) {
 			color += ((base * intensity * std::max(0.0f, glm::dot(normal, lightDir))) + (glm::vec3(100.0f, 100.0f, 100.0f) * intensity * std::pow(std::max(0.0f, glm::dot(normal, halfway)), phongExp)));
 		}
 		// Account for reflectivity of surface
-		glm::vec3 reflection = glm::vec3(0.0f, 0.0f, 0.0f);
 		float reflectivity = closest->getReflectivity();
 		if (bounces && reflectivity > 0.0f) {
 			glm::vec3 dir = ray.getDirection();

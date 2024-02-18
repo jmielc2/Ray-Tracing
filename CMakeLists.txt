@@ -28,4 +28,5 @@ target_sources(main PRIVATE
     "Ray-Tracing/Components/Renderer.cpp"
     "Ray-Tracing/Components/Surface.cpp"
 )
+set(CMAKE_CXX_FLAGS "-Wall -O3")
 target_link_libraries(main ${SDL2_LIBRARIES} "SDL2_image")
