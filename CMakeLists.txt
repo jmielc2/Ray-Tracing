@@ -14,6 +14,7 @@ find_package(glm REQUIRED)
 # Added manually instead
 include_directories("/usr/local/include/SDL2/")
 include_directories("/usr/local/include/glm/")
+include_directories("${CMAKE_SOURCE_DIR}/Ray-Tracing/extern")
 link_directories("/usr/local/lib/")
 
 add_executable(main "")

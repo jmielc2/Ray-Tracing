@@ -145,7 +145,7 @@ bool Renderer::configure(const std::string& filename) {
 					cam["focalDist"], _width, _height, cam["renderDist"]
 				);
 			} else {
-				SDL_Log("Camera type '%s' is invalid.", cam["type"].get<std::string>());
+				SDL_Log("Camera type '%s' is invalid.", cam["type"].get<std::string>().c_str());
 				return false;
 			}
 			json ori = cam["orientation"];
@@ -181,7 +181,7 @@ bool Renderer::configure(const std::string& filename) {
 				} else if (obj["surfaceType"] == "mirror") {
 					st = Surface::SURFACE_TYPES::MIRROR;
 				} else {
-					SDL_Log("Object surface type '%s' is invalid.", obj["surfaceType"].get<std::string>());
+					SDL_Log("Object surface type '%s' is invalid.", obj["surfaceType"].get<std::string>().c_str());
 					return false;
 				}
 				if (obj["type"] == "sphere") {
@@ -198,7 +198,7 @@ bool Renderer::configure(const std::string& filename) {
 						st, obj["reflectivity"]
 					));
 				} else {
-					SDL_Log("Object type '%s' is invalid.", obj["type"].get<std::string>());
+					SDL_Log("Object type '%s' is invalid.", obj["type"].get<std::string>().c_str());
 					return false;
 				}
 			}
