@@ -20,10 +20,12 @@ protected:
 	static const glm::vec3 default_background_color;
 	int _width;
 	int _height;
+	int _numBounces;
 	float _ambient_light_factor;
 	glm::vec3 _background_color;
 	SDL_Window* _window;
 	SDL_Surface* _image;
+	std::vector<glm::vec3> _intermediate;
 	Camera* _camera;
 	std::vector<Surface*> _objects;
 	std::vector<Light*> _lights;
@@ -38,6 +40,7 @@ protected:
 	bool configure(const std::string& filename);
 	glm::vec3 traceRay(const Ray& ray, int bounces = 1, Surface* source = nullptr);
 	static int processSection(void* data);
+	glm::vec3 antiAlias(int x, int y) const;
 public:
 	Renderer();
 	~Renderer();

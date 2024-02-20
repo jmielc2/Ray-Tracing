@@ -9,16 +9,16 @@ The files containing the scene description used to render each of the following 
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-1.png?raw=true)
 
-Render Time (Release Version): 125.038307 ms
+Render Time (Release Version): 40.251438 ms
 
 ### Scene 2
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-2.png?raw=true)
 
-Render Time (Release Version): 68.089103 ms
+Render Time (Release Version): 26.895424 ms
 
 ### Scene 3
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-3.png?raw=true)
 
-Render Time  (Release Version): 132.899688 ms
+Render Time  (Release Version): 48.936584 ms

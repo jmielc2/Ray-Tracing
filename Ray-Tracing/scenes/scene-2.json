@@ -2,7 +2,8 @@
   "environment": {
     "background_color": [ 0.0, 0.0, 0.0 ],
     "width": 750,
-    "height": 600
+    "height": 600,
+    "num_bounces": 3
   },
 
   "camera": {

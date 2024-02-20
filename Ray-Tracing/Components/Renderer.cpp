@@ -10,7 +10,9 @@
 
 using json = nlohmann::json;
 
-#define NUM_THREADS 8
+#define NUM_THREADS 6
+#define MIN_DELAY 2
+#define MAX_DELAY 8
 
 const int Renderer::default_width = 650;
 const int Renderer::default_height = 500;
@@ -21,7 +23,7 @@ static inline Uint32 convertVectorToColor(const glm::vec3& color) {
 	return (0xff000000 | (Uint32(color.r) << 16) | (Uint32(color.g) << 8) | Uint32(color.b));
 }
 
-Renderer::Renderer() : _width(default_width), _height(default_height), _ambient_light_factor(default_ambient_factor), _background_color(default_background_color), _window(nullptr), _image(nullptr), _camera(nullptr) {
+Renderer::Renderer() : _width(default_width), _height(default_height), _numBounces(3), _ambient_light_factor(default_ambient_factor), _background_color(default_background_color), _window(nullptr), _image(nullptr), _camera(nullptr) {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Log("SDL failed to initialize: %s\n", SDL_GetError());
 		std::exit(1);
@@ -104,7 +106,8 @@ int Renderer::processSection(void* data) {
 	for (int y = bounds->yMin; y <= bounds->yMax; y++) {
 		for (int x = 0; x < r->_image->w; x++) {
 			Ray ray = r->_camera->getRay(x, r->_image->h - y);
-			((Uint32*)r->_image->pixels)[y * r->_image->w + x] = convertVectorToColor(r->traceRay(ray, 3));
+			r->_intermediate[y * r->_image->w + x] = r->traceRay(ray, r->_numBounces);
+			// ((Uint32*)r->_image->pixels)[y * r->_image->w + x] = convertVectorToColor(r->traceRay(ray, 3));
 		}
 	}
 	delete bounds;
@@ -127,6 +130,7 @@ bool Renderer::configure(const std::string& filename) {
 			_background_color = glm::vec3(bc[0], bc[1], bc[2]);
 			_width = env["width"];
 			_height = env["height"];
+			_numBounces = env["num_bounces"];
 		}
 
 		// Setup Camera
@@ -209,6 +213,26 @@ bool Renderer::configure(const std::string& filename) {
 	return true;
 }
 
+glm::vec3 Renderer::antiAlias(int x, int y) const {
+	glm::vec3 res(0, 0, 0);
+	int count = 0;
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			int tx = x + i;
+			int ty = y + j;
+			if (tx < 0 || ty < 0 || tx >= _image->w || ty >= _image->h) {
+				continue;
+			}
+			res += _intermediate[ty * _image->w + x];
+			count++;
+		}
+	}
+	res.r /= count;
+	res.g /= count;
+	res.b /= count;
+	return res;
+}
+
 bool Renderer::loadScene(const std::string& filename) {
 	// Configure Renderer from scene description
 	if (!this->configure(filename)) {
@@ -221,6 +245,7 @@ bool Renderer::loadScene(const std::string& filename) {
 		return false;
 	}
 	_image = SDL_GetWindowSurface(_window);
+	_intermediate.resize(_width * _height);
 	return true;
 }
 
@@ -241,6 +266,13 @@ bool Renderer::render() {
 	for (int i = 0; i < NUM_THREADS; i++) {
 		SDL_WaitThread(threads[i], NULL);
 	}
+	for (int y = 0; y < _image->h; y++) {
+		for (int x = 0; x < _image->w; x++) {
+			
+			((Uint32*)_image->pixels)[y * _image->w + x] = convertVectorToColor(antiAlias(x, y));
+		}
+	}
+
 	steady_clock::time_point end = clock.now();
 	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count());
 	SDL_ShowWindow(_window);
