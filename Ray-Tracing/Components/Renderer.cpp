@@ -105,9 +105,13 @@ int Renderer::processSection(void* data) {
 	Renderer* r = bounds->renderer;
 	for (int y = bounds->yMin; y <= bounds->yMax; y++) {
 		for (int x = 0; x < r->_image->w; x++) {
-			Ray ray = r->_camera->getRay(x, r->_image->h - y);
-			r->_intermediate[y * r->_image->w + x] = r->traceRay(ray, r->_numBounces);
-			// ((Uint32*)r->_image->pixels)[y * r->_image->w + x] = convertVectorToColor(r->traceRay(ray, 3));
+			std::vector<Ray> rays = r->_camera->getRays(x, r->_image->h - y);
+			glm::vec3 color(0.0f);
+			for (Ray& ray : rays) {
+				color += r->traceRay(ray, r->_numBounces);
+			}
+			color /= rays.size();
+			((Uint32*)r->_image->pixels)[y * r->_image->w + x] = convertVectorToColor(color);
 		}
 	}
 	delete bounds;
@@ -213,26 +217,6 @@ bool Renderer::configure(const std::string& filename) {
 	return true;
 }
 
-glm::vec3 Renderer::antiAlias(int x, int y) const {
-	glm::vec3 res(0, 0, 0);
-	int count = 0;
-	for (int i = -1; i <= 1; i++) {
-		for (int j = -1; j <= 1; j++) {
-			int tx = x + i;
-			int ty = y + j;
-			if (tx < 0 || ty < 0 || tx >= _image->w || ty >= _image->h) {
-				continue;
-			}
-			res += _intermediate[ty * _image->w + x];
-			count++;
-		}
-	}
-	res.r /= count;
-	res.g /= count;
-	res.b /= count;
-	return res;
-}
-
 bool Renderer::loadScene(const std::string& filename) {
 	// Configure Renderer from scene description
 	if (!this->configure(filename)) {
@@ -245,36 +229,31 @@ bool Renderer::loadScene(const std::string& filename) {
 		return false;
 	}
 	_image = SDL_GetWindowSurface(_window);
-	_intermediate.resize(_width * _height);
 	return true;
 }
 
 bool Renderer::render() {
 	using namespace std::chrono;
 	high_resolution_clock clock;
+	int numTrials = 50;
 	steady_clock::time_point start = clock.now();
-	SDL_Thread* threads[NUM_THREADS];
-	const int span = _image->h / NUM_THREADS;
-	for (int i = 0; i < NUM_THREADS; i++) {
-		SectionBounds* data = new SectionBounds(i * span, ((i + 1) * span) - 1, this);
-		threads[i] = SDL_CreateThread(Renderer::processSection, "Section Thread", data);
-		if (!threads[i]) {
-			SDL_Log("SDL failed to create thread.");
-			std::exit(1);
+	for (int i = 0; i < numTrials; i++) {
+		SDL_Thread* threads[NUM_THREADS];
+		const int span = _image->h / NUM_THREADS;
+		for (int i = 0; i < NUM_THREADS; i++) {
+			SectionBounds* data = new SectionBounds(i * span, ((i + 1) * span) - 1, this);
+			threads[i] = SDL_CreateThread(Renderer::processSection, "Section Thread", data);
+			if (!threads[i]) {
+				SDL_Log("SDL failed to create thread.");
+				std::exit(1);
+			}
+		}
+		for (int i = 0; i < NUM_THREADS; i++) {
+			SDL_WaitThread(threads[i], NULL);
 		}
 	}
-	for (int i = 0; i < NUM_THREADS; i++) {
-		SDL_WaitThread(threads[i], NULL);
-	}
-	for (int y = 0; y < _image->h; y++) {
-		for (int x = 0; x < _image->w; x++) {
-			
-			((Uint32*)_image->pixels)[y * _image->w + x] = convertVectorToColor(antiAlias(x, y));
-		}
-	}
-
 	steady_clock::time_point end = clock.now();
-	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count());
+	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count() / numTrials);
 	SDL_ShowWindow(_window);
 	return true;
 }

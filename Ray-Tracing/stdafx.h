@@ -10,7 +10,7 @@
 #include <chrono>
 #include <algorithm>
 
-#ifdef _DEBUG
+#if _DEBUG
 #include <iostream>
 #endif
 

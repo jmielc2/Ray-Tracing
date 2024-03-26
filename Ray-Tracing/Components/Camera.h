@@ -7,6 +7,7 @@ class Camera;
 class OrthoCamera;
 class PerspCamera;
 
+#include <vector>
 #include "glm.hpp"
 #include "Entity.h"
 #include "Ray.h"
@@ -26,6 +27,7 @@ public:
 	virtual ~Camera();
 
 	virtual Ray getRay(int pixelX, int pixelY) const = 0;
+	virtual std::vector<Ray> getRays(int pixelX, int pixelY) const = 0;
 	inline float getMaxRenderDist() const { return _renderDist; }
 #ifdef _DEBUG
 	virtual void debug() const;
@@ -38,6 +40,7 @@ public:
 	OrthoCamera(const glm::vec3& position, int x, int y, float renderDist = INFINITY);
 	
 	virtual Ray getRay(int pixelX, int pixelY) const;
+	virtual std::vector<Ray> getRays(int pixelX, int pixelY) const;
 };
 
 class PerspCamera : public Camera {
@@ -49,6 +52,7 @@ public:
 	
 	virtual PerspCamera& setOrientation(float yaw, float pitch, float roll = 0.0f);
 	virtual Ray getRay(int pixelX, int pixelY) const;
+	virtual std::vector<Ray> getRays(int pixelX, int pixelY) const;
 #ifdef _DEBUG
 	virtual void debug() const;
 #endif
