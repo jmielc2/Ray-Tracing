@@ -4,14 +4,14 @@ This is my implementation of a ray tracing program that is capable of rendering 
 ## Latest Working Version:
 
 The files containing the scene description used to render each of the following images is in the ```Ray-Tracing/scenes``` folder.
-Each pixel samples 25 rays and each ray has a maximum depth of 16 bounces.
+Each pixel samples 16 rays and each ray has a maximum depth of 10 bounces.
 Rendered on a Intel Core i5, 2 GHz
 
 ### Scene 1
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-1.png?raw=true)
 
-Render Time (Release Version): 571.01 ms
+Render Time (Release Version): 561.90 ms
 
 ### Scene 2
 
@@ -23,4 +23,4 @@ Render Time (Release Version): 367.58 ms
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-3.png?raw=true)
 
-Render Time  (Release Version): 736.77 ms
+Render Time  (Release Version): 730.80 ms
