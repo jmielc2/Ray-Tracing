@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.11..3.27)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS_INIT "-Wall -Wpedantic -Werror -Wconversion -Wsign-conversion -Weffc++")
 
 project("Ray Tracer")
 
@@ -10,7 +11,7 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(glm REQUIRED)
 
-# SDL2, SDL2_image, and glm imported include directories don't work (;_;)
+# SDL2, SDL2_image, and glm imported include directories don't work ;_;
 # Added manually instead
 include_directories("/usr/local/include/SDL2/")
 include_directories("/usr/local/include/glm/")

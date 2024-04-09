@@ -37,8 +37,8 @@ Ray OrthoCamera::getRay(int pixelX, int pixelY) const {
 
 std::vector<Ray> OrthoCamera::getRays(int pixelX, int pixelY) const {
 	std::vector<Ray> rays;
-	for (float i = 0.0f; i <= 1.0f; i += 0.25f) {
-		for (float j = 0.0f; j <= 1.0f; j += 0.25f) {
+	for (float i = 0.25f; i <= 1.0f; i += 0.25f) {
+		for (float j = 0.25f; j <= 1.0f; j += 0.25f) {
 			float x = (_imgViewX / -200.0f) + ((float(pixelX) + i) / 100.0f);
 			float y = (_imgViewY / -200.0f) + ((float(pixelY) + j) / 100.0f);
 			rays.push_back(Ray(_position + (x * _right) + (y * _up), -1.0f * _backward, _renderDist));
@@ -68,8 +68,8 @@ Ray PerspCamera::getRay(int pixelX, int pixelY) const {
 
 std::vector<Ray> PerspCamera::getRays(int pixelX, int pixelY) const {
 	std::vector<Ray> rays;
-	for (float i = 0.0f; i <= 1.0f; i += 0.25f) {
-		for (float j = 0.0f; j <= 1.0f; j += 0.25f) {
+	for (float i = 0.25f; i <= 1.0f; i += 0.25f) {
+		for (float j = 0.25f; j <= 1.0f; j += 0.25f) {
 			float x = (_imgViewX / -200.0f) + ((pixelX + i) / 100.0f);
 			float y = (_imgViewY / -200.0f) + ((pixelY + j) / 100.0f);
 			glm::vec3 start = _position + (x * _right) + (y * _up);

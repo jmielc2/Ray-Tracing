@@ -3,7 +3,7 @@
     "background_color": [ 0.0, 0.0, 0.0 ],
     "width": 750,
     "height": 600,
-    "num_bounces": 16
+    "num_bounces": 10
   },
 
   "camera": {
@@ -20,8 +20,8 @@
 
   "lights": [
     {
-      "position": [ -10.0, 13.0, 10.0 ],
-      "intensity": 1.0,
+      "position": [ -10.0, 13.0, -10.0 ],
+      "intensity": 0.6,
       "color": [ 255.0, 255.0, 255.0 ]
     },
     {
@@ -30,7 +30,7 @@
       "color": [ 255.0, 255.0, 255.0 ]
     },
     {
-      "position": [ 0.0, 10.0, 10.0 ],
+      "position": [ 0.0, 10.0, -10.0 ],
       "intensity": 0.7,
       "color": [ 255.0, 255.0, 255.0 ]
     }

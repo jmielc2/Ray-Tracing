@@ -235,7 +235,7 @@ bool Renderer::loadScene(const std::string& filename) {
 bool Renderer::render() {
 	using namespace std::chrono;
 	high_resolution_clock clock;
-	int numTrials = 50;
+	int numTrials = 25;
 	steady_clock::time_point start = clock.now();
 	for (int i = 0; i < numTrials; i++) {
 		SDL_Thread* threads[NUM_THREADS];

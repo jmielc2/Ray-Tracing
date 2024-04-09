@@ -11,16 +11,16 @@ Rendered on a Intel Core i5, 2 GHz
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-1.png?raw=true)
 
-Render Time (Release Version): 836.007446 ms
+Render Time (Release Version): 571.01 ms
 
 ### Scene 2
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-2.png?raw=true)
 
-Render Time (Release Version): 513.743896 ms
+Render Time (Release Version): 367.58 ms
 
 ### Scene 3
 
 ![alt text](https://github.com/jmielc2/Ray-Tracing/blob/master/docs/rendered-scene-3.png?raw=true)
 
-Render Time  (Release Version): 1155.335083.055176 ms
+Render Time  (Release Version): 736.77 ms

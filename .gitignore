@@ -18,7 +18,7 @@ Ray-Tracing/**/*.png
 mono_crash.*
 
 # Build results
-.DStore
+.DS_Store
 build/
 [Dd]ebug/
 [Dd]ebugPublic/
