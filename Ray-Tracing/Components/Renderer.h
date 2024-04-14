@@ -21,6 +21,7 @@ protected:
 	int _width;
 	int _height;
 	int _numBounces;
+	int _numTrials;
 	float _ambient_light_factor;
 	glm::vec3 _background_color;
 	SDL_Window* _window;

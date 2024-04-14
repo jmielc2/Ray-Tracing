@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS_INIT "-Wall -Wpedantic -Werror -Wconversion -Wsign-conversion -Weffc++")
-set(CMAKE_CXX_FLAGS_DEBUG_INIT "-DDEBUG -ggdb")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-D_DEBUG -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE_INIT "-O3")
 
 project("Ray Tracer")

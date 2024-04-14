@@ -23,7 +23,7 @@ static inline Uint32 convertVectorToColor(const glm::vec3& color) {
 	return (0xff000000 | (Uint32(color.r) << 16) | (Uint32(color.g) << 8) | Uint32(color.b));
 }
 
-Renderer::Renderer() : _width(default_width), _height(default_height), _numBounces(3), _ambient_light_factor(default_ambient_factor), _background_color(default_background_color), _window(nullptr), _image(nullptr), _camera(nullptr) {
+Renderer::Renderer() : _width(default_width), _height(default_height), _numBounces(3), _numTrials(1), _ambient_light_factor(default_ambient_factor), _background_color(default_background_color), _window(nullptr), _image(nullptr), _camera(nullptr) {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Log("SDL failed to initialize: %s\n", SDL_GetError());
 		std::exit(1);
@@ -135,6 +135,7 @@ bool Renderer::configure(const std::string& filename) {
 			_width = env["width"];
 			_height = env["height"];
 			_numBounces = env["num_bounces"];
+			_numTrials = env["num_trials"];
 		}
 
 		// Setup Camera
@@ -235,9 +236,8 @@ bool Renderer::loadScene(const std::string& filename) {
 bool Renderer::render() {
 	using namespace std::chrono;
 	high_resolution_clock clock;
-	int numTrials = 1;
 	steady_clock::time_point start = clock.now();
-	for (int i = 0; i < numTrials; i++) {
+	for (int i = 0; i < _numTrials; i++) {
 		SDL_Thread* threads[NUM_THREADS];
 		const int span = _image->h / NUM_THREADS;
 		for (int i = 0; i < NUM_THREADS; i++) {
@@ -253,7 +253,7 @@ bool Renderer::render() {
 		}
 	}
 	steady_clock::time_point end = clock.now();
-	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count() / numTrials);
+	SDL_Log("Render Time - %f ms\n", duration<float, std::milli>(end - start).count() / _numTrials);
 	SDL_ShowWindow(_window);
 	return true;
 }
