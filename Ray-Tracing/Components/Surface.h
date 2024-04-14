@@ -7,7 +7,7 @@ class Surface;
 class Sphere;
 
 #include <SDL.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include "Entity.h"
 #include "Ray.h"
 

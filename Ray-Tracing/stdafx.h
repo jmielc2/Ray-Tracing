@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <SDL.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <chrono>
 #include <algorithm>
 

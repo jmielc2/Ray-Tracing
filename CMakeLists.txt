@@ -1,25 +1,23 @@
 cmake_minimum_required(VERSION 3.11..3.27)
 
-set(CMAKE_CXX_STANDARD 11)
+cmake_policy(SET CMP0076 NEW)
+
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS_INIT "-Wall -Wpedantic -Werror -Wconversion -Wsign-conversion -Weffc++")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-DDEBUG -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-O3")
 
 project("Ray Tracer")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-find_package(glm REQUIRED)
-
-# SDL2, SDL2_image, and glm imported include directories don't work ;_;
-# Added manually instead
-include_directories("/usr/local/include/SDL2/")
-include_directories("/usr/local/include/glm/")
-include_directories("${CMAKE_SOURCE_DIR}/Ray-Tracing/extern")
-link_directories("/usr/local/lib/")
+find_package(glm CONFIG REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 add_executable(main "")
-target_sources(main PRIVATE
+target_sources(main PUBLIC
     "Ray-Tracing/stdafx.cpp"
     "Ray-Tracing/main.cpp"
     "Ray-Tracing/Components/Camera.cpp"
@@ -29,5 +27,11 @@ target_sources(main PRIVATE
     "Ray-Tracing/Components/Renderer.cpp"
     "Ray-Tracing/Components/Surface.cpp"
 )
-set(CMAKE_CXX_FLAGS "-Wall -O3")
-target_link_libraries(main ${SDL2_LIBRARIES} "SDL2_image")
+
+target_link_libraries(
+    main PUBLIC
+    ${SDL2_LIBRARIES}
+    SDL2_image::SDL2_image
+    glm::glm
+    nlohmann_json::nlohmann_json
+)

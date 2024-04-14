@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 		SDL_UpdateWindowSurface(window);
 		int delay = int(1000.0f / 30.0f) - int(SDL_GetTicks64() - start);
 		if (delay > 0) {
-			SDL_Delay(delay);
+			SDL_Delay(std::uint32_t(delay));
 		}
 	}
 	return 0;

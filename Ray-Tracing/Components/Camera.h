@@ -8,7 +8,7 @@ class OrthoCamera;
 class PerspCamera;
 
 #include <vector>
-#include "glm.hpp"
+#include "glm/glm.hpp"
 #include "Entity.h"
 #include "Ray.h"
 

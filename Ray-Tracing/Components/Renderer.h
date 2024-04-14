@@ -7,6 +7,7 @@ class Renderer;
 
 #include <SDL.h>
 #include <vector>
+#include <glm/glm.hpp>
 #include "Camera.h"
 #include "Light.h"
 #include "Surface.h"

@@ -5,7 +5,7 @@
 
 class Ray;
 
-#include "glm.hpp"
+#include "glm/glm.hpp"
 
 class Ray {
 protected:

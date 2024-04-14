@@ -5,6 +5,8 @@ Entity::Entity(const glm::vec3& position) : _position(position), _backward(-1.0f
 	return;
 }
 
+Entity::~Entity() {}
+
 // Creates 3D Orthonormal Basis aligned with the given yaw, pitch, and roll
 Entity& Entity::setOrientation(float yaw, float pitch, float roll) {
 	pitch = 90.0f + (-1.0f * pitch);

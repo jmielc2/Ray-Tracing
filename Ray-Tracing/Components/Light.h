@@ -6,7 +6,7 @@
 class Light;
 
 #include "Entity.h"
-#include "glm.hpp"
+#include "glm/glm.hpp"
 
 class Light : public Entity {
 protected:
