@@ -1,5 +1,4 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
+#pragma once
 
 // Common Standard Library Headers
 #include <fstream>
@@ -49,5 +48,3 @@ constexpr double degrees_to_radians(double degrees) {
 #include "color.hpp"
 #include "aabb.hpp"
 #include "timer.hpp"
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef COLOR_HPP
-#define COLOR_HPP
+#pragma once
 
 #include "util.hpp"
 
@@ -37,5 +36,3 @@ void write_to_file(const ImageData& data) {
 	}
 	file.close();
 }
-
-#endif
