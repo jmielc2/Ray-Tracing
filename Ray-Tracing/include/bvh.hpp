@@ -1,0 +1,73 @@
+#ifndef BVH_NODE_HPP
+#define BVH_NODE_HPP
+
+#include "util.hpp"
+#include "hittable.hpp"
+#include "hittable_list.hpp"
+
+#include <algorithm>
+
+class BVHNode : public Hittable {
+private:
+	std::shared_ptr<Hittable> left;
+	std::shared_ptr<Hittable> right;
+	AABB bbox;
+public:
+	BVHNode(HittableList list) :
+		BVHNode(list.objectList(), 0, list.objectList().size())
+	{}
+
+	BVHNode(const std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end) {
+		const size_t span = end - start;
+		switch (span) {
+		case(1):
+			left = right = objects[start];
+			break;
+		case(2):
+			left = objects[start];
+			right = objects[start + 1];
+			break;
+		default:
+			bbox = AABB::empty;
+			for (const auto& object : objects) {
+				bbox = AABB(bbox, object->bounding_box());
+			}
+			const int axis = bbox.longest_axis();
+			const auto comparator = [axis](const std::shared_ptr<Hittable>& a, const std::shared_ptr<Hittable>& b) {
+				const Interval& a_interval = a->bounding_box().axis_interval(axis);
+				const Interval& b_interval = b->bounding_box().axis_interval(axis);
+				return a_interval.min < b_interval.min;
+			};
+			std::vector<std::shared_ptr<Hittable>> subset(objects.begin() + start, objects.begin() + end);
+			std::sort(subset.begin(), subset.end(), comparator);
+			const auto half = static_cast<size_t>(span * 0.5);
+			left = std::make_shared<BVHNode>(subset, 0, half);
+			right = std::make_shared<BVHNode>(subset, half, subset.size());
+			break;
+		}
+	}
+
+	std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override {
+		if (!bbox.hit(ray, ray_t)) {
+			return {};
+		}
+		const auto left_hit = left->hit(ray, ray_t);
+		const auto right_hit = right->hit(ray, ray_t);
+		if (left_hit.has_value() || right_hit.has_value()) {
+			if (left_hit.has_value() && right_hit.has_value()) {
+				return (left_hit.value().t < right_hit.value().t) ? left_hit : right_hit;
+			} else if (left_hit.has_value()) {
+				return left_hit;
+			}
+			return right_hit;
+		}
+		return {};
+	}
+
+	const AABB& bounding_box() const override {
+		return bbox;
+	}
+};
+
+#endif
+
