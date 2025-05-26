@@ -141,8 +141,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\aabb.cpp" />
+    <ClCompile Include="src\bvh.cpp" />
+    <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\color.cpp" />
+    <ClCompile Include="src\hittable.cpp" />
+    <ClCompile Include="src\hittable_list.cpp" />
     <ClCompile Include="src\interval.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\material.cpp" />
+    <ClCompile Include="src\ray.cpp" />
+    <ClCompile Include="src\sphere.cpp" />
+    <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\vec3.cpp" />
   </ItemGroup>
   <ItemGroup>

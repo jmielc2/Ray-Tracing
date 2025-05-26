@@ -6,6 +6,8 @@
 #include "bvh.hpp"
 #include "texture.hpp"
 
+using namespace rt;
+
 int main(int argc, char* argv[]) {
 	try {
 		// Setup Scene
