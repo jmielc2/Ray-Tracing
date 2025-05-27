@@ -15,11 +15,13 @@ namespace rt {
 		bool front_face = false;
 
 		// assumes outward_normal is unit vector
+		HitRecord() = default;
 		void set_face_normal(const Ray& r, const Vec3& outward_normal);
 	};
 
 	class Hittable {
 	public:
+		Hittable() = default;
 		virtual ~Hittable() = default;
 		virtual std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const = 0;
 		virtual const AABB& bounding_box() const = 0;

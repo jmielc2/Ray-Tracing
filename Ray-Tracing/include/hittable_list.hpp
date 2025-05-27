@@ -14,6 +14,11 @@ namespace rt {
 	public:
 		HittableList();
 		explicit HittableList(const std::shared_ptr<Hittable>& object);
+		HittableList(const HittableList& other) = default;
+		HittableList(HittableList&& other) = default;
+
+		HittableList& operator=(const HittableList& other) = default;
+		HittableList& operator=(HittableList&& other) = default;
 
 		void clear();
 		void add(const std::shared_ptr<Hittable>& object);

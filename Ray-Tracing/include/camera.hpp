@@ -21,6 +21,8 @@ namespace rt {
 
 	private:
 		struct RenderBatchInfo {
+			RenderBatchInfo() = default;
+			RenderBatchInfo(const Hittable& world);
 			const Hittable& world;
 		};
 
@@ -49,6 +51,11 @@ namespace rt {
 		Camera();
 		Camera(int width, double focus_dist, double defocus_angle, double aspect, double field_of_view);
 		Camera(const Point3& eye, const Vec3& look_dir, const Vec3& vup, int width, double focus_dist, double defocus_angle, double aspect, double field_of_view);
+		Camera(const Camera& other) = default;
+		Camera(Camera&& other) = default;
+		
+		Camera& operator=(const Camera& other) = default;
+		Camera& operator=(Camera&& other) = default;
 
 		void initialize();
 		void look_at(const Point3& look_at_point);

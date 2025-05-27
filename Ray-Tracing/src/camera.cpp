@@ -5,6 +5,8 @@ namespace rt {
 	* Private Member Functions
 	*/
 
+	Camera::RenderBatchInfo::RenderBatchInfo(const Hittable& world) : world(world) {}
+
 	Ray Camera::get_ray(size_t pixel_x, size_t pixel_y) const {
 		Vec3 offset = sample_square_offset();
 		Point3 pixel_viewport_loc = viewport_pixel_00 + ((pixel_x + offset.x()) * pixel_delta_u) + ((pixel_y + offset.y()) * pixel_delta_v);
