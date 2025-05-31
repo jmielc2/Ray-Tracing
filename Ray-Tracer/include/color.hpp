@@ -9,7 +9,7 @@ namespace rt {
 
 	struct ImageData {
 		std::string name;
-		int width, height;
+		size_t width, height;
 		std::vector<Color> pixel_buffer;
 	};
 

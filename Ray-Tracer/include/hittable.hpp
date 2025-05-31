@@ -22,7 +22,13 @@ namespace rt {
 	class Hittable {
 	public:
 		Hittable() = default;
+		Hittable(const Hittable&) = default;
+		Hittable(Hittable&&) noexcept = default;
 		virtual ~Hittable() = default;
+
+		Hittable& operator=(const Hittable&) = default;
+		Hittable& operator=(Hittable&&) noexcept = default;
+
 		virtual std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const = 0;
 		virtual const AABB& bounding_box() const = 0;
 	};

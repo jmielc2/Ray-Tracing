@@ -8,6 +8,13 @@ namespace rt {
 		add(object);
 	}
 
+	//HittableList::HittableList(const HittableList& other) :
+	//	bbox(other.bbox, AABB::empty),
+	//	objects(other.objects)
+	//{ 
+	//	std::cout << "Copying Hittable List!\n";
+	//}
+
 	void HittableList::clear() {
 		objects.clear();
 	}

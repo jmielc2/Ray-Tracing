@@ -8,7 +8,7 @@
 
 using namespace rt;
 
-static auto bouncing_spheres() {
+static std::tuple<HittableList, Camera> bouncing_spheres() {
 	// Setup Camera
 	Camera camera(600, 10.0, 0.6, 16.0 / 9.0, 20.0);
 	camera.position = Point3(13, 2, 3);
@@ -56,7 +56,7 @@ static auto bouncing_spheres() {
 	world.add(std::make_shared<Sphere>(Point3(0, 1, 0), 1.0, material1));
 	world.add(std::make_shared<Sphere>(Point3(-4, 1, 0), 1.0, material2));
 	world.add(std::make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
-	return std::make_tuple(std::move(world), std::move(camera));
+	return { std::move(world), std::move(camera) };
 }
 
 static std::tuple<HittableList, Camera> checkered_spheres() {
@@ -73,16 +73,14 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 	auto checker = std::make_shared<CheckerTexture>(0.32, Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
 	world.add(std::make_shared<Sphere>(Point3(0, -10, 0), 10, std::make_shared<Lambertian>(checker)));
 	world.add(std::make_shared<Sphere>(Point3(0, 10, 0), 10, std::make_shared<Lambertian>(checker)));
-	return std::make_tuple(world, camera);
+	return { std::move(world), std::move(camera) };
 }
 
 int main(int argc, char* argv[]) {
 	try {
-		
-
 		// Build Scene
-		// const auto world = bouncing_spheres();
-		auto [world, camera] = checkered_spheres();
+		auto [world, camera] = bouncing_spheres();
+		// auto [world, camera] = checkered_spheres();
 
 		// Ray Trace
 		{

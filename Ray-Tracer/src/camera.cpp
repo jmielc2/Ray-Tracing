@@ -5,6 +5,8 @@ namespace rt {
 	* Private Member Functions
 	*/
 
+	const size_t num_threads = (std::thread::hardware_concurrency() > 0) ? std::thread::hardware_concurrency() : 1;
+
 	Camera::RenderBatchInfo::RenderBatchInfo(const Hittable& world) : world(world) {}
 
 	Ray Camera::get_ray(size_t pixel_x, size_t pixel_y) const {
@@ -29,7 +31,7 @@ namespace rt {
 		return (disk_offset.x() * defocus_disk_u) + (disk_offset.y() * defocus_disk_v) + position;
 	}
 
-	Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const {
+	Color Camera::ray_color(const Ray& ray, size_t depth, const Hittable& world) const {
 		if (depth == 0) [[unlikely]] {
 			return Color(0, 0, 0);
 		}
@@ -75,21 +77,21 @@ namespace rt {
 
 	void Camera::render_helper(const RenderBatchInfo& info) {
 		std::cout << std::setprecision(3);
-		size_t curScanline = progress_counter.fetch_add(1);
+		size_t curScanline = progress_counter->fetch_add(1);
 		while (curScanline < height) [[likely]] {
 			{
-				std::lock_guard<std::mutex> lock(ioMutex);
+				std::lock_guard<std::mutex> lock(*ioMutex);
 				std::cout << "Progress: " << (curScanline + 1) * 100.0 / height << "%   \r";
 			}
-			for (int x = 0; x < width; x++) {
+			for (size_t x = 0; x < width; x++) {
 				Color color(0, 0, 0);
-				for (int i = 0; i < samples_per_pixel; i++) {
+				for (size_t i = 0; i < samples_per_pixel; i++) {
 					Ray ray = get_ray(x, curScanline);
 					color += ray_color(ray, max_depth, info.world);
 				}
-				pixel_buffer[curScanline * width + x] = color / samples_per_pixel;
+				pixel_buffer[curScanline * width + x] = color / static_cast<double>(samples_per_pixel);
 			}
-			curScanline = progress_counter.fetch_add(1);
+			curScanline = progress_counter->fetch_add(1);
 		}
 	}
 
@@ -104,8 +106,8 @@ namespace rt {
 		viewport_width = viewport_height * (double(width) / height);
 		Vec3 viewport_u = u * viewport_width;
 		Vec3 viewport_v = -w * viewport_height;
-		pixel_delta_u = viewport_u / width;
-		pixel_delta_v = viewport_v / height;
+		pixel_delta_u = viewport_u / static_cast<double>(width);
+		pixel_delta_v = viewport_v / static_cast<double>(height);
 		update_viewport_position(viewport_u, viewport_v);
 	}
 
@@ -119,7 +121,9 @@ namespace rt {
 		v(Vec3(0, 0, -1)),
 		w(Vec3(0, 1, 0)),
 		vup(Vec3(0, 1, 0)),
-		look_dir(Vec3(0, 0, -1))
+		look_dir(Vec3(0, 0, -1)),
+		ioMutex(std::make_unique<std::mutex>()),
+		progress_counter(std::make_unique<std::atomic<size_t>>())
 	{
 		initialize();
 	}
@@ -135,7 +139,9 @@ namespace rt {
 		width(width),
 		focus_dist(focus_dist),
 		defocus_angle(defocus_angle),
-		fov(degrees_to_radians(field_of_view))
+		fov(degrees_to_radians(field_of_view)),
+		ioMutex(std::make_unique<std::mutex>()),
+		progress_counter(std::make_unique<std::atomic<size_t>>())
 	{
 		initialize();
 	}
@@ -147,7 +153,9 @@ namespace rt {
 		focus_dist(focus_dist),
 		defocus_angle(defocus_angle),
 		aspect(aspect),
-		fov(degrees_to_radians(field_of_view))
+		fov(degrees_to_radians(field_of_view)),
+		ioMutex(std::make_unique<std::mutex>()),
+		progress_counter(std::make_unique<std::atomic<size_t>>())
 	{
 		initialize();
 	}
@@ -159,13 +167,13 @@ namespace rt {
 	}
 
 	void Camera::render(const Hittable& world) {
-		progress_counter.store(0);
-		std::array<std::thread, num_threads> threads;
+		progress_counter->store(0);
+		std::vector<std::thread> threads(num_threads);
 		RenderBatchInfo info{ world };
-		for (int i = 0; i < num_threads; i++) {
+		for (size_t i = 0; i < num_threads; i++) {
 			threads[i] = std::thread(&Camera::render_helper, this, info);
 		}
-		for (int i = 0; i < num_threads; i++) {
+		for (size_t i = 0; i < num_threads; i++) {
 			threads[i].join();
 		}
 		std::cout << "\n";
