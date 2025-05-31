@@ -18,7 +18,6 @@ namespace rt {
 
 	private:
 		struct RenderBatchInfo {
-			RenderBatchInfo() = default;
 			RenderBatchInfo(const Hittable& world);
 			const Hittable& world;
 		};

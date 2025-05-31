@@ -10,10 +10,10 @@ using namespace rt;
 
 static std::tuple<HittableList, Camera> bouncing_spheres() {
 	// Setup Camera
-	Camera camera(600, 10.0, 0.6, 16.0 / 9.0, 20.0);
+	Camera camera(1200, 10.0, 0.6, 16.0 / 9.0, 20.0);
 	camera.position = Point3(13, 2, 3);
 	camera.look_at(Point3(0, 0, 0));
-	camera.samples_per_pixel = 100;
+	camera.samples_per_pixel = 500;
 	camera.max_depth = 50;
 	camera.initialize();
 
@@ -79,8 +79,8 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 int main(int argc, char* argv[]) {
 	try {
 		// Build Scene
-		// auto [world, camera] = bouncing_spheres();
-		auto [world, camera] = checkered_spheres();
+		auto [world, camera] = bouncing_spheres();
+		// auto [world, camera] = checkered_spheres();
 
 		// Ray Trace
 		{

@@ -82,6 +82,7 @@ namespace rt {
 			{
 				std::lock_guard<std::mutex> lock(*ioMutex);
 				std::cout << "Progress: " << (curScanline + 1) * 100.0 / height << "%   \r";
+				std::cout.flush();
 			}
 			for (size_t x = 0; x < width; x++) {
 				Color color(0, 0, 0);
@@ -167,6 +168,7 @@ namespace rt {
 	}
 
 	void Camera::render(const Hittable& world) {
+		std::cout << "Rendering on " << num_threads << " threads.\n";
 		progress_counter->store(0);
 		std::vector<std::thread> threads(num_threads);
 		RenderBatchInfo info{ world };
