@@ -33,6 +33,13 @@ namespace rt {
 		};
 	}
 
+	constexpr std::pair<double, double> Sphere::getSphereUV(const Point3& point) const {
+		const Point3 translated = point - center.origin();
+		const double theta = std::atan2(-translated.z(), translated.x()) + pi;
+		const double phi = std::acos(-translated.y());
+		return { theta * 0.5 / pi, phi / pi};
+	}
+
 	std::optional<HitRecord> Sphere::hit(const Ray& ray, const Interval& ray_t) const {
 		Point3 current_center = center.at(ray.time());
 		Vec3 qc = current_center - ray.origin();
@@ -55,6 +62,9 @@ namespace rt {
 		record.t = t;
 		record.material = material;
 		record.point = ray.at(t);
+		const auto [u, v] = getSphereUV(record.point);
+		record.u = u;
+		record.v = v;
 		Vec3 outward_normal = (record.point - current_center) / radius;
 		record.set_face_normal(ray, outward_normal);
 		return { record };

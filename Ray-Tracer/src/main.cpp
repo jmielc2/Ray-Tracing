@@ -79,8 +79,8 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 int main(int argc, char* argv[]) {
 	try {
 		// Build Scene
-		auto [world, camera] = bouncing_spheres();
-		// auto [world, camera] = checkered_spheres();
+		// auto [world, camera] = bouncing_spheres();
+		auto [world, camera] = checkered_spheres();
 
 		// Ray Trace
 		{

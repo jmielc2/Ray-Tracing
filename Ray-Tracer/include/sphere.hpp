@@ -10,6 +10,9 @@ namespace rt {
 		double radius;
 		std::shared_ptr<Material> material;
 		AABB bbox;
+
+		constexpr std::pair<double, double> getSphereUV(const Point3& point) const;
+
 	public:
 		Sphere(const Point3& center, double radius, const std::shared_ptr<Material>& material);
 		Sphere(const Point3& start, const Point3& end, double radius, const std::shared_ptr<Material>& material);
