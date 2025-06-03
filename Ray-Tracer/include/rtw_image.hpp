@@ -18,6 +18,5 @@ namespace rt {
     public:
         RTWImage() = default;
         explicit RTWImage(const std::string& filename);
-
     };
 }

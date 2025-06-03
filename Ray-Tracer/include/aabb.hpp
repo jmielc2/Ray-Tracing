@@ -9,14 +9,14 @@ namespace rt {
 	public:
 		Interval x, y, z;
 
-		AABB();
-		AABB(Interval x, Interval y, Interval z);
-		AABB(Point3 a, Point3 b);
-		AABB(AABB a, AABB b);
+		AABB() = default;
+		AABB(const Interval& x, const Interval& y, const Interval& z);
+		AABB(const Point3& a, const Point3& b);
+		AABB(const AABB& a, const AABB& b);
 
 		const Interval& axis_interval(int axis) const;
 		int longest_axis() const;
-		bool hit(Ray ray, Interval ray_t) const;
+		bool hit(const Ray& ray, const Interval& ray_t) const;
 
 		static const AABB empty;
 	};

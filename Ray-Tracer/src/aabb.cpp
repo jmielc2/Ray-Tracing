@@ -3,23 +3,21 @@
 namespace rt {
 	const AABB AABB::empty{ Interval::empty, Interval::empty, Interval::empty };
 
-	AABB::AABB() {}
-
-	AABB::AABB(Interval x, Interval y, Interval z) :
-		x(std::move(x)), y(std::move(y)), z(std::move(z))
+	AABB::AABB(const Interval& x, const Interval& y, const Interval& z) :
+		x(x), y(y), z(z)
 	{
 	}
 
-	AABB::AABB(Point3 a, Point3 b) {
+	AABB::AABB(const Point3& a, const Point3& b) {
 		x = (a.x() <= b.x()) ? Interval{ a.x(), b.x() } : Interval{ b.x(), a.x() };
 		y = (a.y() <= b.y()) ? Interval{ a.y(), b.y() } : Interval{ b.y(), a.y() };
 		z = (a.z() <= b.z()) ? Interval{ a.z(), b.z() } : Interval{ b.z(), a.z() };
 	}
 
-	AABB::AABB(AABB a, AABB b) :
-		x(Interval(a.x, b.x)),
-		y(Interval(a.y, b.y)),
-		z(Interval(a.z, b.z))
+	AABB::AABB(const AABB& a, const AABB& b) :
+		x(a.x, b.x),
+		y(a.y, b.y),
+		z(a.z, b.z)
 	{
 	}
 
@@ -29,7 +27,7 @@ namespace rt {
 		case(Y_AXIS): return y;
 		case(Z_AXIS): return z;
 		default:
-			throw std::runtime_error("Inalid axis provided when getting AABB axis interval.");
+			throw std::runtime_error("Invalid axis provided when getting AABB axis interval.");
 		}
 	}
 
@@ -40,7 +38,8 @@ namespace rt {
 		return (z.size() < x.size()) ? Z_AXIS : X_AXIS;
 	}
 
-	bool AABB::hit(Ray ray, Interval ray_t) const {
+	bool AABB::hit(const Ray& ray, const Interval& ray_t) const {
+		Interval t = ray_t;
 		const auto& origin = ray.origin();
 		const auto& direction = ray.direction();
 
@@ -53,14 +52,14 @@ namespace rt {
 			const double t1 = (interval.max - pos) * dir_inv;
 
 			if (t0 < t1) {
-				if (t0 > ray_t.min) { ray_t.min = t0; }
-				if (t1 < ray_t.max) { ray_t.max = t1; }
+				if (t0 > t.min) { t.min = t0; }
+				if (t1 < t.max) { t.max = t1; }
 			} else {
-				if (t0 < ray_t.max) { ray_t.max = t0; }
-				if (t1 > ray_t.min) { ray_t.min = t1; }
+				if (t0 < t.max) { t.max = t0; }
+				if (t1 > t.min) { t.min = t1; }
 			}
 
-			if (ray_t.max < ray_t.min) { return false; }
+			if (t.max < t.min) { return false; }
 		}
 		return true;
 	}
