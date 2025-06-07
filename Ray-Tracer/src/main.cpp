@@ -76,11 +76,30 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 	return { std::move(world), std::move(camera) };
 }
 
+static std::tuple<HittableList, Camera> earth() {
+    auto earth_texture = std::make_shared<ImageTexture>("earthmap.jpg");
+    auto earth_surface = std::make_shared<Lambertian>(earth_texture);
+    auto globe = std::make_shared<Sphere>(Point3(0,0,0), 2, earth_surface);
+
+    Camera camera(
+		400, 10.0, 16.0 / 9.0, 0.0, 20.0
+	);
+
+    camera.samples_per_pixel = 100;
+    camera.max_depth = 50;
+	camera.initialize();
+
+    camera.position = Point3(0,0,12);
+    camera.look_at(Point3(0,0,0));
+	return { HittableList(globe), std::move(camera) };
+}
+
 int main(int argc, char* argv[]) {
 	try {
 		// Build Scene
 		// auto [world, camera] = bouncing_spheres();
-		auto [world, camera] = checkered_spheres();
+		// auto [world, camera] = checkered_spheres();
+		auto [world, camera] = earth();
 
 		// Ray Trace
 		{

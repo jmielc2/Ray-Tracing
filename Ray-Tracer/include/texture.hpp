@@ -1,7 +1,7 @@
 #pragma once
 
 #include "util.hpp"
-#include <iostream>
+#include "rtw_image.hpp"
 
 namespace rt {
 	class Texture {
@@ -32,6 +32,15 @@ namespace rt {
 		CheckerTexture(double scale, const std::shared_ptr<Texture>& even_texture, const std::shared_ptr<Texture>& odd_texture);
 		CheckerTexture(double scale, const Color& even_color, const Color& odd_color);
 
+		Color value(double u, double v, const Point3& p) const override;
+	};
+
+	class ImageTexture : public Texture {
+	private:
+		const RTWImage image;
+	public:
+		explicit ImageTexture(const std::string& filename);
+		
 		Color value(double u, double v, const Point3& p) const override;
 	};
 }

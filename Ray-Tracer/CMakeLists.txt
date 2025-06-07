@@ -2,7 +2,7 @@
 # project specific logic here.
 #
 
-include_directories("include")
+include_directories("include" "extern")
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
