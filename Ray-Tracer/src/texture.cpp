@@ -5,15 +5,9 @@ namespace rt {
 	 * Solid Color Texture
 	 */
 
-	SolidColor::SolidColor(const Color& albedo) :
-		albedo(albedo)
-	{
-	}
+	SolidColor::SolidColor(const Color& albedo) : albedo(albedo) {}
 
-	SolidColor::SolidColor(double r, double g, double b) :
-		albedo(Color(r, g, b))
-	{
-	}
+	SolidColor::SolidColor(double r, double g, double b) : albedo(Color(r, g, b)) {}
 
 	/**
 	 * Checker Texture
@@ -47,19 +41,18 @@ namespace rt {
 	 * Image Texture
 	 */
 
-	ImageTexture::ImageTexture(const std::string& filename) :
-		image(filename)
-	{
-	}
+	ImageTexture::ImageTexture(const std::string& filename) : image(filename) {}
 
 	Color ImageTexture::value(double u, double v, const Point3& p) const {
-		if (image.height() <= 0) return Color{0, 1, 1}; // No image data, return cyan for debugging purposes.
+		if (image.height() <= 0) return cyan; // No image data, return cyan for debugging purposes.
 
 		const Interval value_range(0, 1);
 		u = value_range.clamp(u);
 		v = 1.0f - value_range.clamp(v);
-		auto pixel = image.pixel_data(u, v);
-		const auto color_scale = 1.0f / 255.0f;
-		return Color(pixel[0], pixel[1], pixel[2]) * color_scale;
+		
+		return image.pixel_data(
+			map<double>(u, 0, 1, 0, image.width()),
+			map<double>(v, 0, 1, 0, image.height())
+		);
 	}
 }

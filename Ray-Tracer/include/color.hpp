@@ -6,6 +6,9 @@
 
 namespace rt {
 	using Color = Vec3;
+	
+	constexpr Color magenta(0, 1, 1);
+    constexpr Color cyan(1, 0, 1);
 
 	struct ImageData {
 		std::string name;

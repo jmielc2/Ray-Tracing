@@ -10,11 +10,18 @@ using namespace rt;
 
 static std::tuple<HittableList, Camera> bouncing_spheres() {
 	// Setup Camera
-	Camera camera(1200, 10.0, 0.6, 16.0 / 9.0, 20.0);
-	camera.position = Point3(13, 2, 3);
+	const CameraConfig config {
+		.width = 1200,
+		.focus_dist = 10.0,
+		.aspect_ratio = 16.0 / 9.0,
+		.fov = 20.0,
+		.position = Point3(13, 2, 3),
+		.samples_per_pixel = 500,
+		.max_depth = 50,
+		.defocus_angle = 0.6
+	};
+	Camera camera(config);
 	camera.look_at(Point3(0, 0, 0));
-	camera.samples_per_pixel = 500;
-	camera.max_depth = 50;
 	camera.initialize();
 
 	// Build Scene
@@ -61,11 +68,17 @@ static std::tuple<HittableList, Camera> bouncing_spheres() {
 
 static std::tuple<HittableList, Camera> checkered_spheres() {
 	// Setup Camera
-	Camera camera(400, 10.0, 0.0, 16.0 / 9.0, 20.0);
-	camera.position = Point3(13, 2, 3);
+	const CameraConfig config {
+		.width = 400,
+		.focus_dist = 10.0,
+		.aspect_ratio = 16.0 / 9.0, 
+		.fov = 20.0,
+		.position = Point3(13, 2, 3),
+		.samples_per_pixel = 100,
+		.max_depth = 50
+	};
+	Camera camera(config);
 	camera.look_at(Point3(0, 0, 0));
-	camera.samples_per_pixel = 100;
-	camera.max_depth = 50;
 	camera.initialize();
 
 	// Build Scene
@@ -77,20 +90,25 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 }
 
 static std::tuple<HittableList, Camera> earth() {
+	// Setup camera
+	const CameraConfig config {
+		.width = 400,
+		.focus_dist = 10.0, 
+		.aspect_ratio = 16.0 / 9.0,
+		.fov = 20.0,
+		.position = Point3(0, 0, 12),
+		.max_depth = 50,
+		.samples_per_pixel = 100
+	};
+	Camera camera(config);
+	camera.look_at(Point3(0,0,0));
+	camera.initialize();
+	
+	// Create scene
     auto earth_texture = std::make_shared<ImageTexture>("earthmap.jpg");
     auto earth_surface = std::make_shared<Lambertian>(earth_texture);
     auto globe = std::make_shared<Sphere>(Point3(0,0,0), 2, earth_surface);
 
-    Camera camera(
-		400, 10.0, 16.0 / 9.0, 0.0, 20.0
-	);
-
-    camera.samples_per_pixel = 100;
-    camera.max_depth = 50;
-	camera.initialize();
-
-    camera.position = Point3(0,0,12);
-    camera.look_at(Point3(0,0,0));
 	return { HittableList(globe), std::move(camera) };
 }
 
@@ -110,8 +128,12 @@ int main(int argc, char* argv[]) {
 		// Output Image
 		const std::string filename = (argc == 2) ? argv[1] : "image.ppm";
 		write_to_file(camera.get_image_data(filename));
+		
+		#ifdef DNDEBUG
 		std::cout << "\nPress enter to close ";
 		std::ignore = std::getchar();
+		#endif
+		
 		return EXIT_SUCCESS;
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << "\n";

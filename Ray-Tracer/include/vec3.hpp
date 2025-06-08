@@ -8,14 +8,8 @@ namespace rt {
 		double e[3];
 
 	public:
-		constexpr Vec3() :
-			e{ 0.0, 0.0, 0.0 }
-		{
-		}
-		constexpr Vec3(double e0, double e1, double e2) :
-			e{ e0, e1, e2 }
-		{
-		}
+		constexpr Vec3() : e{ 0.0, 0.0, 0.0 } {}
+		constexpr Vec3(double e0, double e1, double e2) : e{ e0, e1, e2 } {}
 
 		static Vec3 random();
 		static Vec3 random(double min, double max);

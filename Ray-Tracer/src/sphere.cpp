@@ -34,10 +34,10 @@ namespace rt {
 	}
 
 	constexpr std::pair<double, double> Sphere::getSphereUV(const Point3& point) const {
-		const Point3 translated = point - center.origin();
-		const double theta = std::atan2(-translated.z(), translated.x()) + pi;
-		const double phi = std::acos(-translated.y());
-		return { theta * 0.5 / pi, phi / pi};
+		const Point3 translated = (point - center.origin()) / radius;
+		const double theta = std::acos(-translated.y());
+		const double phi = std::atan2(-translated.z(), translated.x()) + pi;
+		return { phi * 0.5 / pi, theta / pi};
 	}
 
 	std::optional<HitRecord> Sphere::hit(const Ray& ray, const Interval& ray_t) const {

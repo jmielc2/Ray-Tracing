@@ -7,8 +7,6 @@ namespace rt {
 
 	const size_t num_threads = (std::thread::hardware_concurrency() > 0) ? std::thread::hardware_concurrency() : 1;
 
-	Camera::RenderBatchInfo::RenderBatchInfo(const Hittable& world) : world(world) {}
-
 	Ray Camera::get_ray(size_t pixel_x, size_t pixel_y) const {
 		Vec3 offset = sample_square_offset();
 		Point3 pixel_viewport_loc = viewport_pixel_00 + ((pixel_x + offset.x()) * pixel_delta_u) + ((pixel_y + offset.y()) * pixel_delta_v);
@@ -75,12 +73,12 @@ namespace rt {
 		viewport_pixel_00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 	}
 
-	void Camera::render_helper(const RenderBatchInfo& info) {
+	void Camera::render_helper(const RenderBatchInfo info) {
 		std::cout << std::setprecision(3);
 		size_t curScanline = progress_counter->fetch_add(1);
 		while (curScanline < height) [[likely]] {
 			{
-				std::lock_guard<std::mutex> lock(*ioMutex);
+				const auto lock = lockIO();
 				std::cout << "Progress: " << (curScanline + 1) * 100.0 / height << "%   \r";
 				std::cout.flush();
 			}
@@ -98,13 +96,13 @@ namespace rt {
 
 	void Camera::initialize() {
 		pixel_sample_scale = 1.0 / samples_per_pixel;
-		height = int(width / aspect);
+		height = static_cast<int>(width / aspect);
 		height = (height > 0) ? height : 1;
 		pixel_buffer.resize(width * height);
 		update_basis_vectors();
 		double slope = std::tan(fov * 0.5);
 		viewport_height = 2.0 * slope * focus_dist;
-		viewport_width = viewport_height * (double(width) / height);
+		viewport_width = viewport_height * (static_cast<double>(width) / height);
 		Vec3 viewport_u = u * viewport_width;
 		Vec3 viewport_v = -w * viewport_height;
 		pixel_delta_u = viewport_u / static_cast<double>(width);
@@ -116,46 +114,15 @@ namespace rt {
 	* Public Member Functions
 	*/
 
-	Camera::Camera() :
-		position(Point3()),
-		u(Vec3(1, 0, 0)),
-		v(Vec3(0, 0, -1)),
-		w(Vec3(0, 1, 0)),
-		vup(Vec3(0, 1, 0)),
-		look_dir(Vec3(0, 0, -1)),
-		ioMutex(std::make_unique<std::mutex>()),
-		progress_counter(std::make_unique<std::atomic<size_t>>())
-	{
-		initialize();
-	}
-
-	Camera::Camera(int width, double focus_dist, double defocus_angle, double aspect, double field_of_view) :
-		position(Point3()),
-		u(Vec3(1, 0, 0)),
-		v(Vec3(0, 0, -1)),
-		w(Vec3(0, 1, 0)),
-		vup(Vec3(0, 1, 0)),
-		look_dir(Vec3(0, 0, -1)),
-		aspect(aspect),
-		width(width),
-		focus_dist(focus_dist),
-		defocus_angle(defocus_angle),
-		fov(degrees_to_radians(field_of_view)),
-		ioMutex(std::make_unique<std::mutex>()),
-		progress_counter(std::make_unique<std::atomic<size_t>>())
-	{
-		initialize();
-	}
-
-	Camera::Camera(const Point3& eye, const Vec3& look_dir, const Vec3& vup, int width, double focus_dist, double defocus_angle, double aspect, double field_of_view) :
-		position(eye),
-		look_dir(unit_vector(look_dir)),
-		vup(vup), width(width),
-		focus_dist(focus_dist),
-		defocus_angle(defocus_angle),
-		aspect(aspect),
-		fov(degrees_to_radians(field_of_view)),
-		ioMutex(std::make_unique<std::mutex>()),
+	Camera::Camera(const CameraConfig& config) :
+		position(config.position),
+		look_dir(unit_vector(config.look_dir)),
+		vup(config.vup),
+		width(config.width),
+		focus_dist(config.focus_dist),
+		defocus_angle(config.defocus_angle),
+		aspect(config.aspect_ratio),
+		fov(degrees_to_radians(config.fov)),
 		progress_counter(std::make_unique<std::atomic<size_t>>())
 	{
 		initialize();
@@ -170,13 +137,14 @@ namespace rt {
 	void Camera::render(const Hittable& world) {
 		std::cout << "Rendering on " << num_threads << " threads.\n";
 		progress_counter->store(0);
-		std::vector<std::thread> threads(num_threads);
-		RenderBatchInfo info{ world };
-		for (size_t i = 0; i < num_threads; i++) {
-			threads[i] = std::thread(&Camera::render_helper, this, info);
+		const size_t thread_count = num_threads - 1;
+		std::vector<std::thread> threads(thread_count);
+		for (size_t i = 0; i < thread_count; i++) {
+			threads[i] = std::thread(&Camera::render_helper, this, RenderBatchInfo{ world });
 		}
-		for (size_t i = 0; i < num_threads; i++) {
-			threads[i].join();
+		render_helper(RenderBatchInfo{ world });
+		for (std::thread& thread : threads) {
+			thread.join();
 		}
 		std::cout << "\n";
 	}

@@ -6,22 +6,31 @@
 #include <thread>
 #include <atomic>
 #include <sstream>
-#include <mutex>
 #include <iomanip>
 
 namespace rt {
-	class Camera {
-	public:
-		Point3 position, look_dir, vup;
-		double aspect = 16.0 / 9.0, fov = degrees_to_radians(90.0), defocus_angle = 0, focus_dist = 10;
-		size_t width = 400, max_depth = 50, samples_per_pixel = 100;
+	struct CameraConfig {
+		Point3 position = Point3(0.0, 0.0, 10.0);
+		Vec3 look_dir = Vec3(0.0, 0.0, -1.0);
+		Vec3 vup = Vec3(0.0, 1.0, 0.0);
+		double aspect_ratio = 16.0 / 9.0;
+		double fov = degrees_to_radians(90.0);
+		double defocus_angle = 0.0;
+		double focus_dist = 10.0;
+		size_t width = 400;
+		size_t max_depth = 50;
+		size_t samples_per_pixel = 100;
+	};
 
+	class Camera {
 	private:
 		struct RenderBatchInfo {
-			RenderBatchInfo(const Hittable& world);
 			const Hittable& world;
 		};
 
+		Point3 position, look_dir, vup;
+		double aspect = 16.0 / 9.0, fov = degrees_to_radians(90.0), defocus_angle = 0, focus_dist = 10;
+		size_t width = 400, max_depth = 50, samples_per_pixel = 100;
 		Point3 viewport_pixel_00;
 		Vec3 pixel_delta_u, pixel_delta_v;
 		Vec3 u, v, w; // Camera basis vectors. u = right, v = forward, w = up
@@ -30,7 +39,6 @@ namespace rt {
 		size_t height = 0;
 		std::unique_ptr<std::atomic<size_t>> progress_counter;
 		std::vector<Color> pixel_buffer{ 0 };
-		std::unique_ptr<std::mutex> ioMutex;
 
 		Ray get_ray(size_t pixel_x, size_t pixel_y) const;
 		Vec3 sample_square_offset() const;
@@ -41,12 +49,10 @@ namespace rt {
 		void update_disk_basis_vectors();
 		void update_viewport_position();
 		void update_viewport_position(const Vec3& viewport_u, const Vec3& viewport_v);
-		void render_helper(const RenderBatchInfo& info);
+		void render_helper(const RenderBatchInfo info);
 
 	public:
-		Camera();
-		Camera(int width, double focus_dist, double defocus_angle, double aspect, double field_of_view);
-		Camera(const Point3& eye, const Vec3& look_dir, const Vec3& vup, int width, double focus_dist, double defocus_angle, double aspect, double field_of_view);
+		Camera(const CameraConfig& config);
 		Camera(Camera&&) noexcept = default;
 		Camera(const Camera&) = delete;
 		~Camera() = default;

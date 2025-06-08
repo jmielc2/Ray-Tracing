@@ -6,24 +6,6 @@ namespace rt {
 
 	const Interval Interval::universe(-infinity, +infinity);
 
-	Interval::Interval() :
-		min(+infinity),
-		max(-infinity)
-	{
-	}
-
-	Interval::Interval(double min, double max) :
-		min(min),
-		max(max)
-	{
-	}
-
-	Interval::Interval(Interval a, Interval b) :
-		min(std::min(a.min, b.min)),
-		max(std::max(a.max, b.max))
-	{
-	}
-
 	double Interval::size() const {
 		return max - min;
 	}
