@@ -115,19 +115,34 @@ static std::tuple<HittableList, Camera> earth() {
 int main(int argc, char* argv[]) {
 	try {
 		// Build Scene
-		// auto [world, camera] = bouncing_spheres();
-		// auto [world, camera] = checkered_spheres();
-		auto [world, camera] = earth();
-
-		// Ray Trace
-		{
-			const Timer<std::chrono::seconds> timer;
-			camera.render(BVHNode(world));
-		}
 
 		// Output Image
-		const std::string filename = (argc == 2) ? argv[1] : "image.ppm";
-		write_to_file(camera.get_image_data(filename));
+		const int render = (argc == 2) ? std::stoi(argv[1]) : 0;
+		switch (render) {
+		case(0): {
+			std::cout << "Scene: Bouncing Spheres\n";
+			auto [world, camera] = bouncing_spheres();
+			const Timer<std::chrono::seconds> timer;
+			camera.render(BVHNode(world));
+			write_to_file(camera.get_image_data("bouncing-spheres.ppm"));
+			break;
+		}
+		case(1): {
+			std::cout << "Scene: Checkered Spheres\n";
+			auto [world, camera] = checkered_spheres();
+			const Timer<std::chrono::seconds> timer;
+			camera.render(BVHNode(world));
+			write_to_file(camera.get_image_data("checkered-spheres.ppm"));
+			break;
+		}
+		case(2): {
+			std::cout << "Scene: Earth\n";
+			auto [world, camera] = earth();
+			const Timer<std::chrono::seconds> timer;
+			camera.render(BVHNode(world));
+			write_to_file(camera.get_image_data("earth.ppm"));
+		}
+		}
 		
 		#ifdef DNDEBUG
 		std::cout << "\nPress enter to close ";
