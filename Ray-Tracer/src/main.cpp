@@ -114,9 +114,6 @@ static std::tuple<HittableList, Camera> earth() {
 
 int main(int argc, char* argv[]) {
 	try {
-		// Build Scene
-
-		// Output Image
 		const int render = (argc == 2) ? std::stoi(argv[1]) : 0;
 		switch (render) {
 		case(0): {
@@ -141,6 +138,10 @@ int main(int argc, char* argv[]) {
 			const Timer<std::chrono::seconds> timer;
 			camera.render(BVHNode(world));
 			write_to_file(camera.get_image_data("earth.ppm"));
+			break;
+		}
+		default: {
+			std::cout << "No such scene\n";
 		}
 		}
 		

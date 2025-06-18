@@ -59,3 +59,4 @@ namespace rt {
 #include "color.hpp"
 #include "aabb.hpp"
 #include "timer.hpp"
+#include "perlin.hpp"
