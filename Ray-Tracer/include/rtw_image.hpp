@@ -13,7 +13,7 @@ namespace rt {
         int image_width = 0;
         int image_height = 0;
 
-        void convert_to_bytes(const float* fdata) const;
+        void convert_to_bytes(const float* fdata);
     public:
         RTWImage() = default;
         explicit RTWImage(const std::string& filename);

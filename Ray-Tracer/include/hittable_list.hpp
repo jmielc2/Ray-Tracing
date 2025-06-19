@@ -17,7 +17,7 @@ namespace rt {
 		~HittableList() override = default;
 
 		HittableList& operator=(const HittableList&) = delete;
-		HittableList& operator=(HittableList&& other) noexcept = default;
+		HittableList& operator=(HittableList&& other) noexcept = delete;
 
 		void clear();
 		void add(const std::shared_ptr<Hittable>& object);

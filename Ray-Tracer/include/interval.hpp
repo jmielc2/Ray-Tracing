@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "util.hpp"
 
 namespace rt {

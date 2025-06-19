@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <thread>
 #include "camera.hpp"
 #include "material.hpp"
 

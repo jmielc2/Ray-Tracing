@@ -8,7 +8,7 @@ namespace rt {
 
 	class AABB {
 	public:
-		const Interval x, y, z;
+		Interval x, y, z;
 
 		AABB() = default;
 		AABB(const Interval& x, const Interval& y, const Interval& z);
