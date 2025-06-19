@@ -1,8 +1,8 @@
 #pragma once
 
-#include "util.hpp"
 #include "hittable.hpp"
 #include "texture.hpp"
+#include "color.hpp"
 
 namespace rt {
 	struct ScatterRecord {
@@ -14,40 +14,37 @@ namespace rt {
 	public:
 		virtual ~Material() = default;
 
-		virtual std::optional<ScatterRecord> scatter([[maybe_unused]] const Ray& ray, [[maybe_unused]] const HitRecord& record) const = 0;
+		[[nodiscard]] virtual std::optional<ScatterRecord> scatter([[maybe_unused]] const Ray& ray, [[maybe_unused]] const HitRecord& record) const = 0;
 	};
 
-	class Lambertian : public Material {
-	private:
+	class Lambertian final : public Material {
 		std::shared_ptr<Texture> tex;
 
 	public:
 		explicit Lambertian(const std::shared_ptr<Texture>& texture);
 		explicit Lambertian(const Color& albedo);
 
-		std::optional<ScatterRecord> scatter(const Ray& ray, const HitRecord& record) const override;
+		[[nodiscard]] std::optional<ScatterRecord> scatter(const Ray& ray, const HitRecord& record) const override;
 	};
 
-	class Metal : public Material {
-	private:
+	class Metal final : public Material {
 		Color albedo;
 		double fuzz;
 	public:
 		Metal(const Color& albedo, double fuzz);
 	
-		std::optional<ScatterRecord> scatter(const Ray& ray, const HitRecord& record) const override;
+		[[nodiscard]] std::optional<ScatterRecord> scatter(const Ray& ray, const HitRecord& record) const override;
 	};
 
-	class Dielectric : public Material {
-	private:
+	class Dielectric final : public Material {
 		double refraction_index;
 
 		// Schlick's reflectance approximation
-		double reflectance(double cosine, double refraction_ratio) const;
+		[[nodiscard]] static double reflectance(double cosine, double refraction_ratio);
 	public:
-		explicit Dielectric(double refraction_index) : refraction_index(refraction_index) {}
+		explicit Dielectric(const double refraction_index) : refraction_index(refraction_index) {}
 
-		std::optional<ScatterRecord> scatter(const Ray& ray, const HitRecord& record) const override;
+		[[nodiscard]] std::optional<ScatterRecord> scatter(const Ray& ray, const HitRecord& record) const override;
 	};
 }
 

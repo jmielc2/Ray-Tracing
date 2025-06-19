@@ -10,20 +10,20 @@ namespace rt {
 		return max - min;
 	}
 
-	bool Interval::contains(double x) const {
+	bool Interval::contains(const double x) const {
 		return min <= x && max >= x;
 	}
 
-	bool Interval::surrounds(double x) const {
+	bool Interval::surrounds(const double x) const {
 		return min < x && max > x;
 	}
 
-	Interval Interval::expand(double delta) const {
+	Interval Interval::expand(const double delta) const {
 		const auto padding = delta / 2.0;
 		return Interval(min - padding, max + padding);
 	}
 
-	double Interval::clamp(double x) const {
+	double Interval::clamp(const double x) const {
 		if (x < min) return min;
 		if (x > max) return max;
 		return x;

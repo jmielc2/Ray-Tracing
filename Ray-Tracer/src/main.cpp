@@ -5,20 +5,21 @@
 #include "camera.hpp"
 #include "bvh.hpp"
 #include "texture.hpp"
+#include "timer.hpp"
 
 using namespace rt;
 
 static std::tuple<HittableList, Camera> bouncing_spheres() {
 	// Setup Camera
-	const CameraConfig config {
-		.width = 1200,
-		.focus_dist = 10.0,
+	constexpr CameraConfig config {
+		.position = Point3(13, 2, 3),
 		.aspect_ratio = 16.0 / 9.0,
 		.fov = 20.0,
-		.position = Point3(13, 2, 3),
-		.samples_per_pixel = 500,
+		.defocus_angle = 0.6,
+		.focus_dist = 10.0,
+		.width = 1200,
 		.max_depth = 50,
-		.defocus_angle = 0.6
+		.samples_per_pixel = 500
 	};
 	Camera camera(config);
 	camera.look_at(Point3(0, 0, 0));
@@ -68,7 +69,7 @@ static std::tuple<HittableList, Camera> bouncing_spheres() {
 
 static std::tuple<HittableList, Camera> checkered_spheres() {
 	// Setup Camera
-	const CameraConfig config {
+	constexpr CameraConfig config {
 		.width = 400,
 		.focus_dist = 10.0,
 		.aspect_ratio = 16.0 / 9.0, 
@@ -91,7 +92,7 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 
 static std::tuple<HittableList, Camera> earth() {
 	// Setup camera
-	const CameraConfig config {
+	constexpr CameraConfig config {
 		.width = 400,
 		.focus_dist = 10.0, 
 		.aspect_ratio = 16.0 / 9.0,

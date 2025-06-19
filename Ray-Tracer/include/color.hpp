@@ -1,8 +1,7 @@
 #pragma once
 
-#include "util.hpp"
-
-#include <sstream>
+#include <vector>
+#include "vec3.hpp"
 
 namespace rt {
 	using Color = Vec3;
@@ -12,7 +11,7 @@ namespace rt {
 
 	struct ImageData {
 		std::string name;
-		size_t width, height;
+		int width, height;
 		std::vector<Color> pixel_buffer;
 	};
 

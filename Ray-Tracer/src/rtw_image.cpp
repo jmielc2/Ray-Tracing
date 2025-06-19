@@ -1,14 +1,13 @@
+#include "util.hpp"
 #include "rtw_image.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
 #include "stb_image.h"
 
 namespace rt {
-    static const int channels_per_pixel = 3;
+    static constexpr int channels_per_pixel = 3;
 
     RTWImage::RTWImage(const std::string& filename) {
-        auto image_dir = getenv("RTW_IMAGE");
-        if (image_dir && load(std::string(image_dir) + "/" + filename)) return;
         if (load(filename)) return;
         if (load("images/" + filename)) return;
         if (load("../images/" + filename)) return;

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "util.hpp"
+#include <memory>
+#include "aabb.hpp"
+#include "interval.hpp"
+#include "vec3.hpp"
+#include "ray.hpp"
 
 namespace rt {
 	class Material;
@@ -29,8 +33,8 @@ namespace rt {
 		Hittable& operator=(const Hittable&) = default;
 		Hittable& operator=(Hittable&&) noexcept = default;
 
-		virtual std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const = 0;
-		virtual const AABB& bounding_box() const = 0;
+		[[nodiscard]] virtual std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const = 0;
+		[[nodiscard]] virtual const AABB& bounding_box() const = 0;
 	};
 }
 

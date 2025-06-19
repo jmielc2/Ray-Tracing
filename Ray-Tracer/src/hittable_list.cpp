@@ -1,19 +1,11 @@
 #include "hittable_list.hpp"
 
 namespace rt {
-	HittableList::HittableList() {
-	}
+	HittableList::HittableList() = default;
 
 	HittableList::HittableList(const std::shared_ptr<Hittable>& object) {
 		add(object);
 	}
-
-	//HittableList::HittableList(const HittableList& other) :
-	//	bbox(other.bbox, AABB::empty),
-	//	objects(other.objects)
-	//{ 
-	//	std::cout << "Copying Hittable List!\n";
-	//}
 
 	void HittableList::clear() {
 		objects.clear();

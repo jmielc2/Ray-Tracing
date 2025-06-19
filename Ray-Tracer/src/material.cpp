@@ -34,7 +34,7 @@ namespace rt {
 	}
 
 	std::optional<ScatterRecord> Metal::scatter(const Ray& ray, const HitRecord& record) const {
-		Vec3 scatter_direction = unit_vector(reflect(ray.direction(), record.normal)) + random_unit_vector() * fuzz;
+		const Vec3 scatter_direction = unit_vector(reflect(ray.direction(), record.normal)) + random_unit_vector() * fuzz;
 		if (dot(scatter_direction, record.normal) <= 0) {
 			return {};
 		}
@@ -45,17 +45,17 @@ namespace rt {
 	* Dielectric
 	*/
 
-	double Dielectric::reflectance(double cosine, double refraction_ratio) const {
+	double Dielectric::reflectance(double cosine, double refraction_ratio) {
 		double r0 = (1 - refraction_ratio) / (1 + refraction_ratio);
 		r0 = r0 * r0;
 		return r0 + (1 - r0) * std::pow(1 - cosine, 5);
 	}
 
 	std::optional<ScatterRecord> Dielectric::scatter(const Ray& ray, const HitRecord& record) const {
-		Vec3 unit_direction = unit_vector(ray.direction());
-		double cos_theta = std::fmin(dot(-unit_direction, record.normal), 1);
-		double sin_theta = std::sqrt(1 - cos_theta * cos_theta);
-		double refraction_ratio = record.front_face ? 1.0 / refraction_index : refraction_index;
+		const Vec3 unit_direction = unit_vector(ray.direction());
+		const double cos_theta = std::fmin(dot(-unit_direction, record.normal), 1);
+		const double sin_theta = std::sqrt(1 - cos_theta * cos_theta);
+		const double refraction_ratio = record.front_face ? 1.0 / refraction_index : refraction_index;
 		Vec3 scatter_direction;
 		if (refraction_ratio * sin_theta > 1 || reflectance(cos_theta, refraction_ratio) > random_double()) {
 			scatter_direction = reflect(unit_direction, record.normal);

@@ -1,4 +1,6 @@
+#include <iomanip>
 #include "camera.hpp"
+#include "material.hpp"
 
 namespace rt {
 	/*
@@ -7,44 +9,44 @@ namespace rt {
 
 	const size_t num_threads = (std::thread::hardware_concurrency() > 0) ? std::thread::hardware_concurrency() : 1;
 
-	Ray Camera::get_ray(size_t pixel_x, size_t pixel_y) const {
-		Vec3 offset = sample_square_offset();
-		Point3 pixel_viewport_loc = viewport_pixel_00 + ((pixel_x + offset.x()) * pixel_delta_u) + ((pixel_y + offset.y()) * pixel_delta_v);
+	Ray Camera::get_ray(const int pixel_x, const int pixel_y) const {
+		const Vec3 offset = sample_square_offset();
+		const Point3 pixel_viewport_loc = viewport_pixel_00 + ((pixel_x + offset.x()) * pixel_delta_u) + ((pixel_y + offset.y()) * pixel_delta_v);
 		Point3 ray_origin = (defocus_angle <= 0) ? position : defocus_disk_sample();
-		double ray_time = random_double();
-		return Ray(ray_origin, pixel_viewport_loc - ray_origin, ray_time);
+		const double ray_time = random_double();
+		return {ray_origin, pixel_viewport_loc - ray_origin, ray_time};
 	}
 
-	Vec3 Camera::sample_square_offset() const {
-		return Vec3(random_double() - 0.5, random_double() - 0.5, 0.0);
+	Vec3 Camera::sample_square_offset() {
+		return {random_double() - 0.5, random_double() - 0.5, 0.0};
 	}
 
-	Vec3 Camera::sample_disk_offset() const {
-		double angle = random_double(0.0, 2 * pi);
-		return Vec3(std::cos(angle) * 0.5, std::sin(angle) * 0.5, 0.0);
+	Vec3 Camera::sample_disk_offset() {
+		const double angle = random_double(0.0, 2 * pi);
+		return {std::cos(angle) * 0.5, std::sin(angle) * 0.5, 0.0};
 	}
 
 	Vec3 Camera::defocus_disk_sample() const {
-		Vec3 disk_offset = random_in_unit_disk();
+		const Vec3 disk_offset = random_in_unit_disk();
 		return (disk_offset.x() * defocus_disk_u) + (disk_offset.y() * defocus_disk_v) + position;
 	}
 
-	Color Camera::ray_color(const Ray& ray, size_t depth, const Hittable& world) const {
+	Color Camera::ray_color(const Ray &ray, size_t depth, const Hittable &world) {
 		if (depth == 0) [[unlikely]] {
-			return Color(0, 0, 0);
+			return {0, 0, 0};
 		}
-		auto hit_result = world.hit(ray, Interval{ 0.001, infinity });
+		const auto hit_result = world.hit(ray, Interval{ 0.001, infinity });
 		if (hit_result.has_value()) {
-			HitRecord& hit_record = hit_result.value();
-			auto scatter_result = hit_record.material->scatter(ray, hit_record);
+			const HitRecord& hit_record = hit_result.value();
+			const auto scatter_result = hit_record.material->scatter(ray, hit_record);
 			if (scatter_result.has_value()) {
-				ScatterRecord& scatter_record = scatter_result.value();
+				const ScatterRecord& scatter_record = scatter_result.value();
 				return scatter_record.attenuation * ray_color(scatter_record.scatter_ray, depth - 1, world);
 			}
-			return Color(0, 0, 0);
+			return {0, 0, 0};
 		}
-		Vec3 unit_direction = unit_vector(ray.direction());
-		double a = (unit_direction.y() + 1.0) * 0.5;
+		const Vec3 unit_direction = unit_vector(ray.direction());
+		const double a = (unit_direction.y() + 1.0) * 0.5;
 		return (1 - a) * Color(1, 1, 1) + a * Color(0.5, 0.7, 1.0);
 	}
 
@@ -56,30 +58,30 @@ namespace rt {
 	}
 
 	void Camera::update_disk_basis_vectors() {
-		double defocus_radius = std::tan(degrees_to_radians(defocus_angle * 0.5)) * focus_dist;
+		const double defocus_radius = std::tan(degrees_to_radians(defocus_angle * 0.5)) * focus_dist;
 		defocus_disk_u = defocus_radius * u;
 		defocus_disk_v = defocus_radius * w;
 	}
 
 	void Camera::update_viewport_position() {
-		Vec3 viewport_u = u * viewport_width;
-		Vec3 viewport_v = -w * viewport_height;
+		const Vec3 viewport_u = u * viewport_width;
+		const Vec3 viewport_v = -w * viewport_height;
 		update_viewport_position(viewport_u, viewport_v);
 	}
 
 	void Camera::update_viewport_position(const Vec3& viewport_u, const Vec3& viewport_v) {
-		Point3 viewport_center = position + v * focus_dist;
-		Point3 viewport_upper_left = viewport_center - 0.5 * (viewport_u + viewport_v);
+		const Point3 viewport_center = position + v * focus_dist;
+		const Point3 viewport_upper_left = viewport_center - 0.5 * (viewport_u + viewport_v);
 		viewport_pixel_00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 	}
 
 	void Camera::render_helper(const RenderBatchInfo info) {
 		std::cout << std::setprecision(3);
-		size_t curScanline = progress_counter->fetch_add(1);
+		int curScanline = progress_counter->fetch_add(1);
 		while (curScanline < height) [[likely]] {
 			{
 				const auto lock = lockIO();
-				std::cout << "Progress: " << (curScanline + 1) * 100.0 / height << "%   \r";
+				std::cout << "Progress: " << static_cast<double>(curScanline + 1) * 100.0 / static_cast<double>(height) << "%   \r";
 				std::cout.flush();
 			}
 			for (size_t x = 0; x < width; x++) {
@@ -88,7 +90,7 @@ namespace rt {
 					Ray ray = get_ray(x, curScanline);
 					color += ray_color(ray, max_depth, info.world);
 				}
-				pixel_buffer[curScanline * width + x] = color / static_cast<double>(samples_per_pixel);
+				pixel_buffer[curScanline * width + x] = color / samples_per_pixel;
 			}
 			curScanline = progress_counter->fetch_add(1);
 		}
@@ -100,11 +102,11 @@ namespace rt {
 		height = (height > 0) ? height : 1;
 		pixel_buffer.resize(width * height);
 		update_basis_vectors();
-		double slope = std::tan(fov * 0.5);
+		const double slope = std::tan(fov * 0.5);
 		viewport_height = 2.0 * slope * focus_dist;
 		viewport_width = viewport_height * (static_cast<double>(width) / height);
-		Vec3 viewport_u = u * viewport_width;
-		Vec3 viewport_v = -w * viewport_height;
+		const Vec3 viewport_u = u * viewport_width;
+		const Vec3 viewport_v = -w * viewport_height;
 		pixel_delta_u = viewport_u / static_cast<double>(width);
 		pixel_delta_v = viewport_v / static_cast<double>(height);
 		update_viewport_position(viewport_u, viewport_v);

@@ -1,4 +1,5 @@
 #include "texture.hpp"
+#include "interval.hpp"
 
 namespace rt {
 	/**
@@ -28,10 +29,9 @@ namespace rt {
 	}
 
 	Color CheckerTexture::value(double u, double v, const Point3& p) const {
-		int x = static_cast<int>(std::floor(p.x() * inv_scale));
-		int y = static_cast<int>(std::floor(p.y() * inv_scale));
-		int z = static_cast<int>(std::floor(p.z() * inv_scale));
-		if ((x + y + z) % 2 == 0) {
+		const int x = static_cast<int>(std::floor(p.x() * inv_scale));
+		const int y = static_cast<int>(std::floor(p.y() * inv_scale));
+		if (int z = static_cast<int>(std::floor(p.z() * inv_scale)); (x + y + z) % 2 == 0) {
 			return odd_texture->value(u, v, p);
 		}
 		return even_texture->value(u, v, p);
@@ -46,7 +46,7 @@ namespace rt {
 	Color ImageTexture::value(double u, double v, const Point3& p) const {
 		if (image.height() <= 0) return cyan; // No image data, return cyan for debugging purposes.
 
-		const Interval value_range(0, 1);
+		constexpr Interval value_range(0, 1);
 		u = value_range.clamp(u);
 		v = 1.0f - value_range.clamp(v);
 		

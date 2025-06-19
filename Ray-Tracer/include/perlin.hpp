@@ -1,11 +1,11 @@
 #pragma once
 
-#include "util.hpp"
+#include <vector>
+#include "vec3.hpp"
 
 namespace rt {
     class Perlin {
-    private:
-        static const int point_count = 256;
+        static constexpr int point_count = 256;
         std::vector<double> random_floats;
         std::vector<int> perm_x;
         std::vector<int> perm_y;
@@ -15,6 +15,6 @@ namespace rt {
     public:
         Perlin();
 
-        double noise(const Point3& point) const;
+        [[nodiscard]] double noise(const Point3& point) const;
     };
 }

@@ -1,14 +1,17 @@
+#include "util.hpp"
+#include <algorithm>
+#include <numeric>
 #include "perlin.hpp"
 
 namespace rt {
     void Perlin::permute(std::vector<int>& a) {
         std::for_each(a.rbegin(), a.rend(), [&a](int& element){
-            int index = std::distance(a.data(), &element) - 1;
+            const int index = std::distance(a.data(), &element) - 1;
             if (index <= 0) {
                 return;
             }
-            int target = random_int(0, index);
-            int temp = a[index];
+            const int target = random_int(0, index);
+            const int temp = a[index];
             a[index] = a[target];
             a[target] = temp;
         });
@@ -20,7 +23,7 @@ namespace rt {
         perm_y(point_count),
         perm_z(point_count)
     {
-        std::generate(random_floats.begin(), random_floats.end(), [](){
+        std::ranges::generate(random_floats, []{
             return random_double();
         });
         std::iota(perm_x.begin(), perm_x.end(), 0);

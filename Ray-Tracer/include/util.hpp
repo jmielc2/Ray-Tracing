@@ -1,18 +1,10 @@
 #pragma once
 
 // Common Standard Library Headers
-#include <fstream>
-#include <string>
-#include <cmath>
-#include <iostream>
 #include <limits>
-#include <memory>
 #include <numbers>
-#include <optional>
 #include <random>
 #include <utility>
-#include <vector>
-#include <cstddef>
 #include <cstdlib>
 #include <concepts>
 #include <mutex>
@@ -21,17 +13,23 @@ namespace rt {
 	// Helper Constants
 	constexpr double infinity = std::numeric_limits<double>::infinity();
 	constexpr double pi = std::numbers::pi_v<double>;
-	constexpr int X_AXIS = 0;
-	constexpr int Y_AXIS = 1;
-	constexpr int Z_AXIS = 2;
+	enum class Axis {
+		X = 0,
+		Y = 1,
+		Z = 2
+	};
 	extern std::mutex ioMutex;
-	
+
 	// Helper Functions
-	double random_double();
-	double random_double(double min, double max);
-	int random_int(int min, int max);
-	constexpr double degrees_to_radians(double degrees) {
+
+	auto random_double() -> double;
+	auto random_double(double min, double max) -> double;
+	auto random_int(int min, int max) -> int;
+	constexpr double degrees_to_radians(const double degrees) {
 		return degrees * pi / 180.0;
+	}
+	constexpr int to_index(const Axis a) {
+		return std::to_underlying(a);
 	}
 
 	template<std::totally_ordered T>
@@ -42,21 +40,11 @@ namespace rt {
     }
 
 	template<std::totally_ordered T>
-	constexpr auto map(T x, T ilow, T ihigh, T olow, T ohigh) {
-		if (x < ilow) return olow;
-		if (x >= ihigh) return ohigh;
-		return ((x - ilow) / (ihigh - ilow)) * (ohigh - olow) + olow;
+	constexpr auto map(T x, T input_low, T input_high, T output_low, T output_high) {
+		if (x < input_low) return output_low;
+		if (x >= input_high) return output_high;
+		return ((x - input_low) / (input_high - input_low)) * (output_high - output_low) + output_low;
 	}
 
-	inline auto lockIO() { return std::lock_guard<std::mutex>(ioMutex); }
+	inline auto lockIO() { return std::lock_guard(ioMutex); }
 }
-
-
-// Common Headers
-#include "vec3.hpp"
-#include "interval.hpp"
-#include "ray.hpp"
-#include "color.hpp"
-#include "aabb.hpp"
-#include "timer.hpp"
-#include "perlin.hpp"

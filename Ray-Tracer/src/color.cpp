@@ -1,4 +1,7 @@
+#include <fstream>
+#include "util.hpp"
 #include "color.hpp"
+#include "interval.hpp"
 
 namespace rt {
 	static double linear_to_gamma(double linear_component) {
@@ -9,12 +12,12 @@ namespace rt {
 	}
 
 	static void write_color(std::ostream& stream, const Color& col) {
-		double r = linear_to_gamma(col.x());
-		double g = linear_to_gamma(col.y());
-		double b = linear_to_gamma(col.z());
+		const double r = linear_to_gamma(col.x());
+		const double g = linear_to_gamma(col.y());
+		const double b = linear_to_gamma(col.z());
 
-		static const Interval intensity(0.0, 0.999);
-		stream << int(256 * intensity.clamp(r)) << " " << int(256 * intensity.clamp(g)) << " " << int(256 * intensity.clamp(b)) << "\n";
+		static constexpr Interval intensity(0.0, 0.999);
+		stream << static_cast<int>(256 * intensity.clamp(r)) << " " << static_cast<int>(256 * intensity.clamp(g)) << " " << static_cast<int>(256 * intensity.clamp(b)) << "\n";
 	}
 
 	void write_to_file(const ImageData& data) {

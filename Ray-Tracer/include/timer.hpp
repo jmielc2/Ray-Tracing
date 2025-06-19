@@ -6,7 +6,6 @@
 namespace rt {
 	template<class T = std::chrono::microseconds>
 	class Timer {
-	private:
 		const std::chrono::high_resolution_clock::time_point start;
 	public:
 		Timer() :

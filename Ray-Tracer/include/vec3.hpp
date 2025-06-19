@@ -4,19 +4,18 @@
 
 namespace rt {
 	class Vec3 {
-	private:
 		double e[3];
 
 	public:
 		constexpr Vec3() : e{ 0.0, 0.0, 0.0 } {}
-		constexpr Vec3(double e0, double e1, double e2) : e{ e0, e1, e2 } {}
+		constexpr Vec3(const double e0, const double e1, const double e2) : e{ e0, e1, e2 } {}
 
 		static Vec3 random();
 		static Vec3 random(double min, double max);
 
-		const double& x() const;
-		const double& y() const;
-		const double& z() const;
+		[[nodiscard]] const double& x() const;
+		[[nodiscard]] const double& y() const;
+		[[nodiscard]] const double& z() const;
 
 		Vec3 operator-() const;
 		double operator[](int i) const;
@@ -26,9 +25,9 @@ namespace rt {
 		Vec3& operator*=(double t);
 		Vec3& operator/=(double t);
 
-		double length() const;
-		double length_squared() const;
-		bool near_zero() const;
+		[[nodiscard]] double length() const;
+		[[nodiscard]] double length_squared() const;
+		[[nodiscard]] bool near_zero() const;
 
 		friend std::ostream& operator<<(std::ostream& out, const Vec3& v);
 		friend Vec3 operator+(const Vec3& a, const Vec3& b);

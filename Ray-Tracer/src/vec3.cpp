@@ -3,27 +3,27 @@
 
 namespace rt {
 	Vec3 Vec3::random() {
-		return Vec3(random_double(), random_double(), random_double());
+		return {random_double(), random_double(), random_double()};
 	}
 
-	Vec3 Vec3::random(double min, double max) {
-		return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+	Vec3 Vec3::random(const double min, const double max) {
+		return {random_double(min, max), random_double(min, max), random_double(min, max)};
 	}
 
 	const double& Vec3::x() const {
-		return e[X_AXIS];
+		return e[to_index(Axis::X)];
 	}
 
 	const double& Vec3::y() const {
-		return e[Y_AXIS];
+		return e[to_index(Axis::Y)];
 	}
 
 	const double& Vec3::z() const {
-		return e[Z_AXIS];
+		return e[to_index(Axis::Z)];
 	}
 
 	Vec3 Vec3::operator-() const {
-		return Vec3(-e[X_AXIS], -e[Y_AXIS], -e[Z_AXIS]);
+		return {-e[to_index(Axis::X)], -e[to_index(Axis::Y)], -e[to_index(Axis::Z)]};
 	}
 
 	double Vec3::operator[](int i) const {
@@ -35,30 +35,30 @@ namespace rt {
 	}
 
 	Vec3& Vec3::operator+=(const Vec3& v) {
-		e[X_AXIS] += v[X_AXIS];
-		e[Y_AXIS] += v[Y_AXIS];
-		e[Z_AXIS] += v[Z_AXIS];
+		e[to_index(Axis::X)] += v[to_index(Axis::X)];
+		e[to_index(Axis::Y)] += v[to_index(Axis::Y)];
+		e[to_index(Axis::Z)] += v[to_index(Axis::Z)];
 		return *this;
 	}
 
 	Vec3& Vec3::operator-=(const Vec3& v) {
-		e[X_AXIS] -= v[X_AXIS];
-		e[Y_AXIS] -= v[Y_AXIS];
-		e[Z_AXIS] -= v[Z_AXIS];
+		e[to_index(Axis::X)] -= v[to_index(Axis::X)];
+		e[to_index(Axis::Y)] -= v[to_index(Axis::Y)];
+		e[to_index(Axis::Z)] -= v[to_index(Axis::Z)];
 		return *this;
 	}
 
 	Vec3& Vec3::operator*=(double t) {
-		e[X_AXIS] *= t;
-		e[Y_AXIS] *= t;
-		e[Z_AXIS] *= t;
+		e[to_index(Axis::X)] *= t;
+		e[to_index(Axis::Y)] *= t;
+		e[to_index(Axis::Z)] *= t;
 		return *this;
 	}
 
 	Vec3& Vec3::operator/=(double t) {
-		e[X_AXIS] /= t;
-		e[Y_AXIS] /= t;
-		e[Z_AXIS] /= t;
+		e[to_index(Axis::X)] /= t;
+		e[to_index(Axis::Y)] /= t;
+		e[to_index(Axis::Z)] /= t;
 		return *this;
 	}
 
@@ -67,48 +67,50 @@ namespace rt {
 	}
 
 	double Vec3::length_squared() const {
-		return e[X_AXIS] * e[X_AXIS] + e[Y_AXIS] * e[Y_AXIS] + e[Z_AXIS] * e[Z_AXIS];
+		return e[to_index(Axis::X)] * e[to_index(Axis::X)] + e[to_index(Axis::Y)] * e[to_index(Axis::Y)] + e[to_index(Axis::Z)] * e[to_index(Axis::Z)];
 	}
 
 	bool Vec3::near_zero() const {
 		double s = 1e-8;
-		return (std::fabs(e[X_AXIS]) < s) && (std::fabs(e[Y_AXIS]) < s) && (std::fabs(e[Z_AXIS]) < s);
+		return (std::fabs(e[to_index(Axis::X)]) < s) && (std::fabs(e[to_index(Axis::Y)]) < s) && (std::fabs(e[to_index(Axis::Z)]) < s);
 	}
 
+#ifdef DNDEBUG
 	std::ostream& operator<<(std::ostream& out, const Vec3& v) {
-		return out << '{' << v.e[X_AXIS] << ' ' << v.e[Y_AXIS] << ' ' << v.e[Z_AXIS] << '}';
+		return out << '{' << v.e[to_index(Axis::X)] << ' ' << v.e[to_index(Axis::Y)] << ' ' << v.e[to_index(Axis::Z)] << '}';
 	}
+#endif
 
 	Vec3 operator+(const Vec3& a, const Vec3& b) {
-		return Vec3(
-			a.e[X_AXIS] + b.e[X_AXIS],
-			a.e[Y_AXIS] + b.e[Y_AXIS],
-			a.e[Z_AXIS] + b.e[Z_AXIS]
-		);
+		return {
+			a.e[to_index(Axis::X)] + b.e[to_index(Axis::X)],
+			a.e[to_index(Axis::Y)] + b.e[to_index(Axis::Y)],
+			a.e[to_index(Axis::Z)] + b.e[to_index(Axis::Z)]
+		};
 	}
 
 	Vec3 operator-(const Vec3& a, const Vec3& b) {
-		return Vec3(
-			a.e[X_AXIS] - b.e[X_AXIS],
-			a.e[Y_AXIS] - b.e[Y_AXIS],
-			a.e[Z_AXIS] - b.e[Z_AXIS]
-		);
+		return {
+			a.e[to_index(Axis::X)] - b.e[to_index(Axis::X)],
+			a.e[to_index(Axis::Y)] - b.e[to_index(Axis::Y)],
+			a.e[to_index(Axis::Z)] - b.e[to_index(Axis::Z)]
+		};
 	}
 
 	Vec3 operator*(const Vec3& a, const Vec3& b) {
-		return Vec3(
-			a.e[X_AXIS] * b.e[X_AXIS],
-			a.e[Y_AXIS] * b.e[Y_AXIS],
-			a.e[Z_AXIS] * b.e[Z_AXIS]
-		);
+		return {
+			a.e[to_index(Axis::X)] * b.e[to_index(Axis::X)],
+			a.e[to_index(Axis::Y)] * b.e[to_index(Axis::Y)],
+			a.e[to_index(Axis::Z)] * b.e[to_index(Axis::Z)]
+		};
 	}
 
 	Vec3 operator*(double t, const Vec3& a) {
-		return Vec3(
-			a.e[X_AXIS] * t,
-			a.e[Y_AXIS] * t,
-			a.e[Z_AXIS] * t
-		);
+		return {
+			a.e[to_index(Axis::X)] * t,
+			a.e[to_index(Axis::Y)] * t,
+			a.e[to_index(Axis::Z)] * t
+		};
 	}
 
 	Vec3 operator*(const Vec3& a, double t) {
@@ -120,15 +122,15 @@ namespace rt {
 	}
 
 	double dot(const Vec3& a, const Vec3& b) {
-		return a.e[X_AXIS] * b.e[X_AXIS] + a.e[Y_AXIS] * b.e[Y_AXIS] + a.e[Z_AXIS] * b.e[Z_AXIS];
+		return a.e[to_index(Axis::X)] * b.e[to_index(Axis::X)] + a.e[to_index(Axis::Y)] * b.e[to_index(Axis::Y)] + a.e[to_index(Axis::Z)] * b.e[to_index(Axis::Z)];
 	}
 
 	Vec3 cross(const Vec3& a, const Vec3& b) {
-		return Vec3(
-			a.e[Y_AXIS] * b.e[Z_AXIS] - a.e[Z_AXIS] * b.e[Y_AXIS],
-			a.e[Z_AXIS] * b.e[X_AXIS] - a.e[X_AXIS] * b.e[Z_AXIS],
-			a.e[X_AXIS] * b.e[Y_AXIS] - a.e[Y_AXIS] * b.e[X_AXIS]
-		);
+		return {
+			a.e[to_index(Axis::Y)] * b.e[to_index(Axis::Z)] - a.e[to_index(Axis::Z)] * b.e[to_index(Axis::Y)],
+			a.e[to_index(Axis::Z)] * b.e[to_index(Axis::X)] - a.e[to_index(Axis::X)] * b.e[to_index(Axis::Z)],
+			a.e[to_index(Axis::X)] * b.e[to_index(Axis::Y)] - a.e[to_index(Axis::Y)] * b.e[to_index(Axis::X)]
+		};
 	}
 
 	Vec3 unit_vector(const Vec3& a) {
