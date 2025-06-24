@@ -70,13 +70,13 @@ static std::tuple<HittableList, Camera> bouncing_spheres() {
 static std::tuple<HittableList, Camera> checkered_spheres() {
 	// Setup Camera
 	constexpr CameraConfig config {
-		.width = 400,
-		.focus_dist = 10.0,
-		.aspect_ratio = 16.0 / 9.0, 
-		.fov = 20.0,
 		.position = Point3(13, 2, 3),
+		.aspect_ratio = 16.0 / 9.0,
+		.fov = 20.0,
+		.focus_dist = 10.0,
+		.width = 400,
+		.max_depth = 50,
 		.samples_per_pixel = 100,
-		.max_depth = 50
 	};
 	Camera camera(config);
 	camera.look_at(Point3(0, 0, 0));
@@ -93,11 +93,11 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 static std::tuple<HittableList, Camera> earth() {
 	// Setup camera
 	constexpr CameraConfig config {
-		.width = 400,
-		.focus_dist = 10.0, 
+		.position = Point3(0, 0, 12),
 		.aspect_ratio = 16.0 / 9.0,
 		.fov = 20.0,
-		.position = Point3(0, 0, 12),
+		.focus_dist = 10.0,
+		.width = 400,
 		.max_depth = 50,
 		.samples_per_pixel = 100
 	};
@@ -113,32 +113,52 @@ static std::tuple<HittableList, Camera> earth() {
 	return { HittableList(globe), std::move(camera) };
 }
 
-int main(int argc, char* argv[]) {
+static std::tuple<HittableList, Camera> perlin_spheres() {
+	constexpr CameraConfig config {
+		.position = Point3(13, 2, 3),
+		.aspect_ratio = 16.0 / 9.0,
+		.fov = 20.0
+	};
+	Camera camera(config);
+	camera.look_at(Point3(0, 0, 0));
+	camera.initialize();
+
+	// Create scene
+	auto perlin_texture = std::make_shared<NoiseTexture>(4);
+	auto perlin_material = std::make_shared<Lambertian>(perlin_texture);
+	auto world = HittableList();
+	world.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2.0, perlin_material));
+	world.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, perlin_material));
+	return { std::move(world), std::move(camera) };
+}
+
+void render_scene(std::tuple<HittableList, Camera> scene, const std::string& filename) {
+	std::cout << "Scene: " << filename << "\n";
+	auto& [world, camera] = scene;
+	Timer<std::chrono::seconds> timer;
+	camera.render(BVHNode(world));
+	timer.stop();
+	write_to_file(camera.get_image_data(filename));
+}
+
+int main(const int argc, char* argv[]) {
 	try {
 		const int render = (argc == 2) ? std::stoi(argv[1]) : 0;
 		switch (render) {
 		case(0): {
-			std::cout << "Scene: Bouncing Spheres\n";
-			auto [world, camera] = bouncing_spheres();
-			const Timer<std::chrono::seconds> timer;
-			camera.render(BVHNode(world));
-			write_to_file(camera.get_image_data("bouncing-spheres.ppm"));
+			render_scene(bouncing_spheres(), "bouncing-spheres.ppm");
 			break;
 		}
 		case(1): {
-			std::cout << "Scene: Checkered Spheres\n";
-			auto [world, camera] = checkered_spheres();
-			const Timer<std::chrono::seconds> timer;
-			camera.render(BVHNode(world));
-			write_to_file(camera.get_image_data("checkered-spheres.ppm"));
+			render_scene(checkered_spheres(), "checkered-spheres.ppm");
 			break;
 		}
 		case(2): {
-			std::cout << "Scene: Earth\n";
-			auto [world, camera] = earth();
-			const Timer<std::chrono::seconds> timer;
-			camera.render(BVHNode(world));
-			write_to_file(camera.get_image_data("earth.ppm"));
+			render_scene(earth(), "earth.ppm");
+			break;
+		}
+		case(3): {
+			render_scene(perlin_spheres(), "perlin-spheres.ppm");
 			break;
 		}
 		default: {

@@ -2,10 +2,12 @@
 
 #include "vec3.hpp"
 #include "interval.hpp"
+#include "ray.hpp"
 
 namespace rt {
-	class Ray; 
-
+	/**
+	 * Stands for Axis Aligned Bounding Box
+	 */
 	class AABB {
 	public:
 		Interval x, y, z;

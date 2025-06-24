@@ -1,5 +1,6 @@
 #pragma once
 
+#include "perlin.hpp"
 #include "util.hpp"
 #include "rtw_image.hpp"
 
@@ -38,6 +39,15 @@ namespace rt {
 	public:
 		explicit ImageTexture(const std::string& filename);
 		
+		[[nodiscard]] Color value(double u, double v, const Point3& p) const override;
+	};
+
+	class NoiseTexture final : public Texture {
+		const Perlin noise;
+		const double scale;
+	public:
+		explicit NoiseTexture(double scale);
+
 		[[nodiscard]] Color value(double u, double v, const Point3& p) const override;
 	};
 }

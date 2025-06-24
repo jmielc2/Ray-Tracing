@@ -8,20 +8,20 @@ namespace rt {
 
 	SolidColor::SolidColor(const Color& albedo) : albedo(albedo) {}
 
-	SolidColor::SolidColor(double r, double g, double b) : albedo(Color(r, g, b)) {}
+	SolidColor::SolidColor(const double r, const double g, const double b) : albedo(Color(r, g, b)) {}
 
 	/**
 	 * Checker Texture
 	 */
 
-	CheckerTexture::CheckerTexture(double scale, const std::shared_ptr<Texture>& even_texture, const std::shared_ptr<Texture>& odd_texture) :
+	CheckerTexture::CheckerTexture(const double scale, const std::shared_ptr<Texture>& even_texture, const std::shared_ptr<Texture>& odd_texture) :
 		inv_scale(1.0 / scale),
 		even_texture(even_texture),
 		odd_texture(odd_texture)
 	{
 	}
 
-	CheckerTexture::CheckerTexture(double scale, const Color& even_color, const Color& odd_color) :
+	CheckerTexture::CheckerTexture(const double scale, const Color& even_color, const Color& odd_color) :
 		inv_scale(1.0 / scale),
 		even_texture(std::make_shared<SolidColor>(even_color)),
 		odd_texture(std::make_shared<SolidColor>(odd_color))
@@ -54,5 +54,20 @@ namespace rt {
 			map<double>(u, 0, 1, 0, image.width()),
 			map<double>(v, 0, 1, 0, image.height())
 		);
+	}
+
+	/**
+	 * Noise Texture
+	 */
+
+	NoiseTexture::NoiseTexture(const double scale) :
+		scale(scale)
+	{
+	}
+
+
+	Color NoiseTexture::value(double u, double v, const Point3& p) const {
+		// Gives a marble like appearance
+		return (std::sin(noise.turbulence(p, 7) * 10 + p.z() * scale) + 1) * Color(0.5, 0.5, 0.5);
 	}
 }
