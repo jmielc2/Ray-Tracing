@@ -4,9 +4,26 @@
 namespace rt {
 	const AABB AABB::empty{ Interval::empty, Interval::empty, Interval::empty };
 
+	void AABB::pad_to_minimums() {
+		constexpr double delta = 0.0001;
+		if (x.size() < delta)
+		{
+			x = x.expand(delta);
+		}
+		if (y.size() < delta)
+		{
+			y = y.expand(delta);
+		}
+		if (z.size() < delta)
+		{
+			z = z.expand(delta);
+		}
+	}
+
 	AABB::AABB(const Interval& x, const Interval& y, const Interval& z) :
 		x(x), y(y), z(z)
 	{
+		pad_to_minimums();
 	}
 
 	AABB::AABB(const Point3& a, const Point3& b) :
@@ -14,6 +31,7 @@ namespace rt {
 		y((a.y() <= b.y()) ? Interval{ a.y(), b.y() } : Interval{ b.y(), a.y() }),
 		z((a.z() <= b.z()) ? Interval{ a.z(), b.z() } : Interval{ b.z(), a.z() })
 	{
+		pad_to_minimums();
 	}
 
 	AABB::AABB(const AABB& a, const AABB& b) :

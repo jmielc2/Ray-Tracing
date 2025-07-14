@@ -9,6 +9,7 @@ namespace rt {
 	 * Stands for Axis Aligned Bounding Box
 	 */
 	class AABB {
+		void pad_to_minimums();
 	public:
 		Interval x, y, z;
 

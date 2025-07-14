@@ -1,6 +1,7 @@
 #include "util.hpp"
 #include "hittable_list.hpp"
 #include "sphere.hpp"
+#include "quad.hpp"
 #include "material.hpp"
 #include "camera.hpp"
 #include "bvh.hpp"
@@ -132,6 +133,20 @@ static std::tuple<HittableList, Camera> perlin_spheres() {
 	return { std::move(world), std::move(camera) };
 }
 
+static std::tuple<HittableList, Camera> quads() {
+	constexpr CameraConfig config {
+
+	};
+	Camera camera(config);
+	camera.look_at(Point3(0, 0, 0));
+	camera.initialize();
+
+	auto texture = std::make_shared<SolidColor>(Color(1, 0, 0));
+	const auto quad = std::make_shared<Quad>(Point3(0, 0, 0), Vec3(1, 0, 0), Vec3(0, 1, 0), std::make_shared<Lambertian>(texture));
+	auto world = HittableList(quad);
+	return { std::move(world), std::move(camera) };
+}
+
 void render_scene(std::tuple<HittableList, Camera> scene, const std::string& filename) {
 	std::cout << "Scene: " << filename << "\n";
 	auto& [world, camera] = scene;
@@ -159,6 +174,10 @@ int main(const int argc, char* argv[]) {
 		}
 		case(3): {
 			render_scene(perlin_spheres(), "perlin-spheres.ppm");
+			break;
+		}
+		case(4): {
+			render_scene(quads(), "quads.ppm");
 			break;
 		}
 		default: {
