@@ -34,7 +34,7 @@ namespace rt {
 	}
 
 	std::optional<ScatterRecord> Metal::scatter(const Ray& ray, const HitRecord& record) const {
-		const Vec3 scatter_direction = unit_vector(reflect(ray.direction(), record.normal)) + random_unit_vector() * fuzz;
+		const Vec3 scatter_direction = normalize(reflect(ray.direction(), record.normal)) + random_unit_vector() * fuzz;
 		if (dot(scatter_direction, record.normal) <= 0) {
 			return {};
 		}
@@ -52,7 +52,7 @@ namespace rt {
 	}
 
 	std::optional<ScatterRecord> Dielectric::scatter(const Ray& ray, const HitRecord& record) const {
-		const Vec3 unit_direction = unit_vector(ray.direction());
+		const Vec3 unit_direction = normalize(ray.direction());
 		const double cos_theta = std::fmin(dot(-unit_direction, record.normal), 1);
 		const double sin_theta = std::sqrt(1 - cos_theta * cos_theta);
 		const double refraction_ratio = record.front_face ? 1.0 / refraction_index : refraction_index;

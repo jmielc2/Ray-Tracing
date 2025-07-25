@@ -25,7 +25,7 @@ namespace rt {
 
         virtual void set_bounding_box();
 
-        [[nodiscard]] const AABB& bounding_box() const override;
+        [[nodiscard]] const AABB& bounding_box() const override { return bbox; }
         std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
     };
 }

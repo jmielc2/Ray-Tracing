@@ -32,18 +32,18 @@ namespace rt {
 		return std::to_underlying(a);
 	}
 
-	template<std::totally_ordered T>
-    constexpr auto clamp(T x, T low, T high) {
+	template<class O, std::totally_ordered T>
+    constexpr O clamp(T x, T low, T high) {
         if (x < low) return low;
         if (x < high) return x;
-        return high - 1;
+        return static_cast<O>(high - 1);
     }
 
-	template<std::totally_ordered T>
-	constexpr auto map(T x, T input_low, T input_high, T output_low, T output_high) {
+	template<class O, std::totally_ordered T>
+	constexpr O map(T x, T input_low, T input_high, T output_low, T output_high) {
 		if (x < input_low) return output_low;
 		if (x >= input_high) return output_high;
-		return ((x - input_low) / (input_high - input_low)) * (output_high - output_low) + output_low;
+		return static_cast<O>((x - input_low) / (input_high - input_low) * (output_high - output_low) + output_low);
 	}
 
 	inline auto lockIO() { return std::lock_guard(ioMutex); }

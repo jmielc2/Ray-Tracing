@@ -27,7 +27,7 @@ namespace rt {
 				return a_interval.min < b_interval.min;
 				};
 			std::vector subset(start + objects.begin(), objects.begin() + end);
-			std::sort(subset.begin(), subset.end(), comparator);
+			std::ranges::sort(subset, comparator);
 			const auto half = static_cast<size_t>(span * 0.5);
 			left = std::make_shared<BVHNode>(subset, 0, half);
 			right = std::make_shared<BVHNode>(subset, half, subset.size());
@@ -39,8 +39,8 @@ namespace rt {
 		if (!bbox.hit(ray, ray_t)) {
 			return {};
 		}
-		const auto left_hit = left->hit(ray, ray_t);
-		const auto right_hit = right->hit(ray, ray_t);
+		auto left_hit = left->hit(ray, ray_t);
+		auto right_hit = right->hit(ray, ray_t);
 		if (left_hit.has_value() || right_hit.has_value()) {
 			if (left_hit.has_value() && right_hit.has_value()) {
 				return (left_hit.value().t < right_hit.value().t) ? left_hit : right_hit;

@@ -24,7 +24,7 @@ namespace rt {
         perm_z(point_count)
     {
         std::ranges::generate(random_vecs, []{
-            return unit_vector(Vec3::random(-1, 1));
+            return normalize(Vec3::random(-1, 1));
         });
         std::iota(perm_x.begin(), perm_x.end(), 0);
         std::iota(perm_y.begin(), perm_y.end(), 0);
@@ -35,29 +35,29 @@ namespace rt {
     }
 
     static double perlin_interpolate(const Vec3 c[2][2][2], const double u, const double v, const double w) {
-        double uu = u * u * (3 - 2 * u);
-        double vv = v * v * (3 - 2 * v);
-        double ww = w * w * (3 - 2 * w);
+        const double uu = u * u * (3 - 2 * u);
+        const double vv = v * v * (3 - 2 * v);
+        const double ww = w * w * (3 - 2 * w);
 
-        auto accum = 0.0;
+        auto accumulator = 0.0;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 2; k++) {
                     Vec3 weight_vector(u - i, v - j, w - k);
-                    accum += (uu * i + (1 - uu) * (1 - i)) *
+                    accumulator += (uu * i + (1 - uu) * (1 - i)) *
                         (vv * j + (1 - vv) * (1 - j)) *
                         (ww * k + (1 - ww) * (1 - k)) *
                         dot(weight_vector, c[i][j][k]);
                 }
             }
         }
-        return accum;
+        return accumulator;
     }
 
     double Perlin::noise(const Point3& point) const {
-        double u = point.x() - std::floor(point.x());
-        double v = point.y() - std::floor(point.y());
-        double w = point.z() - std::floor(point.z());
+        const double u = point.x() - std::floor(point.x());
+        const double v = point.y() - std::floor(point.y());
+        const double w = point.z() - std::floor(point.z());
 
         const int x = std::floor(point.x());
         const int y = std::floor(point.y());
@@ -79,15 +79,15 @@ namespace rt {
     }
 
     double Perlin::turbulence(const Point3& point, const int depth) const {
-        auto accum = 0.0;
+        auto accumulator = 0.0;
         auto weight = 1.0;
         auto temp_p = point;
 
         for (int i = 0; i < depth; i++) {
-            accum += noise(temp_p) * weight;
+            accumulator += noise(temp_p) * weight;
             weight *= 0.5;
             temp_p *= 2.0;
         }
-        return std::fabs(accum);
+        return std::fabs(accumulator);
     }
 }

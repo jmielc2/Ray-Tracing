@@ -13,7 +13,7 @@ namespace rt {
         material(material)
     {
         const auto n = cross(u, v);
-        normal = unit_vector(n);
+        normal = normalize(n);
         w = n / n.length_squared();
         D = dot(normal, corner);
         Quad::set_bounding_box();
@@ -23,10 +23,6 @@ namespace rt {
         const auto box_diagonal1 = AABB(corner, corner + u + v);
         const auto box_diagonal2 = AABB(corner + u, corner + v);
         bbox = AABB(box_diagonal1, box_diagonal2);
-    }
-
-    const AABB& Quad::bounding_box() const {
-        return bbox;
     }
 
     std::pair<double, double> Quad::getQuadUV(const Point3& point) const {

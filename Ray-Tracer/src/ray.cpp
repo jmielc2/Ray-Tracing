@@ -12,8 +12,4 @@ namespace rt {
 		Ray(origin, direction, 0) 
 	{
 	}
-
-	Point3 Ray::at(const double t) const {
-		return orig + dir * t;
-	}
 }

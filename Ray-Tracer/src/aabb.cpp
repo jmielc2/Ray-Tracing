@@ -6,22 +6,21 @@ namespace rt {
 
 	void AABB::pad_to_minimums() {
 		constexpr double delta = 0.0001;
-		if (x.size() < delta)
-		{
+		if (x.size() < delta) {
 			x = x.expand(delta);
 		}
-		if (y.size() < delta)
-		{
+		if (y.size() < delta) {
 			y = y.expand(delta);
 		}
-		if (z.size() < delta)
-		{
+		if (z.size() < delta) {
 			z = z.expand(delta);
 		}
 	}
 
 	AABB::AABB(const Interval& x, const Interval& y, const Interval& z) :
-		x(x), y(y), z(z)
+		x(x),
+		y(y),
+		z(z)
 	{
 		pad_to_minimums();
 	}

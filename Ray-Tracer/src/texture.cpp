@@ -51,8 +51,8 @@ namespace rt {
 		v = 1.0f - value_range.clamp(v);
 		
 		return image.pixel_data(
-			map<double>(u, 0, 1, 0, image.width()),
-			map<double>(v, 0, 1, 0, image.height())
+			map<int, double>(u, 0, 1, 0, image.width()),
+			map<int, double>(v, 0, 1, 0, image.height())
 		);
 	}
 

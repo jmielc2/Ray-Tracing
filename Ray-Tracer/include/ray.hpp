@@ -14,7 +14,7 @@ namespace rt {
 		[[nodiscard]] const Point3& origin() const { return orig; }
 		[[nodiscard]] const Vec3& direction() const { return dir; }
 		[[nodiscard]] double time() const { return tm; }
-		[[nodiscard]] Point3 at(double t) const;
+		[[nodiscard]] Point3 at(const double t) const { return orig + dir * t; }
 	};
 }
 

@@ -46,14 +46,14 @@ namespace rt {
 			}
 			return {0, 0, 0};
 		}
-		const Vec3 unit_direction = unit_vector(ray.direction());
+		const Vec3 unit_direction = normalize(ray.direction());
 		const double a = (unit_direction.y() + 1.0) * 0.5;
 		return (1 - a) * Color(1, 1, 1) + a * Color(0.5, 0.7, 1.0);
 	}
 
 	void Camera::update_basis_vectors() {
-		v = unit_vector(look_dir);
-		u = unit_vector(cross(v, vup));
+		v = normalize(look_dir);
+		u = normalize(cross(v, vup));
 		w = cross(u, v);
 		update_disk_basis_vectors();
 	}
@@ -119,7 +119,7 @@ namespace rt {
 
 	Camera::Camera(const CameraConfig& config) :
 		position(config.position),
-		look_dir(unit_vector(config.look_dir)),
+		look_dir(normalize(config.look_dir)),
 		vup(config.vup),
 		width(config.width),
 		focus_dist(config.focus_dist),

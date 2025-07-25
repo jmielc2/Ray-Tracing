@@ -10,28 +10,8 @@ namespace rt {
 		return {random_double(min, max), random_double(min, max), random_double(min, max)};
 	}
 
-	const double& Vec3::x() const {
-		return e[to_index(Axis::X)];
-	}
-
-	const double& Vec3::y() const {
-		return e[to_index(Axis::Y)];
-	}
-
-	const double& Vec3::z() const {
-		return e[to_index(Axis::Z)];
-	}
-
 	Vec3 Vec3::operator-() const {
 		return {-e[to_index(Axis::X)], -e[to_index(Axis::Y)], -e[to_index(Axis::Z)]};
-	}
-
-	double Vec3::operator[](int i) const {
-		return e[i];
-	}
-
-	double& Vec3::operator[](int i) {
-		return e[i];
 	}
 
 	Vec3& Vec3::operator+=(const Vec3& v) {
@@ -62,16 +42,12 @@ namespace rt {
 		return *this;
 	}
 
-	double Vec3::length() const {
-		return std::sqrt(length_squared());
-	}
-
 	double Vec3::length_squared() const {
 		return e[to_index(Axis::X)] * e[to_index(Axis::X)] + e[to_index(Axis::Y)] * e[to_index(Axis::Y)] + e[to_index(Axis::Z)] * e[to_index(Axis::Z)];
 	}
 
 	bool Vec3::near_zero() const {
-		double s = 1e-8;
+		constexpr double s = 1e-8;
 		return (std::fabs(e[to_index(Axis::X)]) < s) && (std::fabs(e[to_index(Axis::Y)]) < s) && (std::fabs(e[to_index(Axis::Z)]) < s);
 	}
 
@@ -113,14 +89,6 @@ namespace rt {
 		};
 	}
 
-	Vec3 operator*(const Vec3& a, double t) {
-		return t * a;
-	}
-
-	Vec3 operator/(const Vec3& a, double t) {
-		return (1.0 / t) * a;
-	}
-
 	double dot(const Vec3& a, const Vec3& b) {
 		return a.e[to_index(Axis::X)] * b.e[to_index(Axis::X)] + a.e[to_index(Axis::Y)] * b.e[to_index(Axis::Y)] + a.e[to_index(Axis::Z)] * b.e[to_index(Axis::Z)];
 	}
@@ -131,10 +99,6 @@ namespace rt {
 			a.e[to_index(Axis::Z)] * b.e[to_index(Axis::X)] - a.e[to_index(Axis::X)] * b.e[to_index(Axis::Z)],
 			a.e[to_index(Axis::X)] * b.e[to_index(Axis::Y)] - a.e[to_index(Axis::Y)] * b.e[to_index(Axis::X)]
 		};
-	}
-
-	Vec3 unit_vector(const Vec3& a) {
-		return a / a.length();
 	}
 
 	Vec3 random_unit_vector() {
@@ -162,14 +126,6 @@ namespace rt {
 			random *= -1;
 		}
 		return random;
-	}
-
-	double distance(const Point3& a, const Point3& b) {
-		return (b - a).length();
-	}
-
-	Vec3 reflect(const Vec3& ray_dir, const Vec3& normal) {
-		return ray_dir - 2 * normal * dot(ray_dir, normal);
 	}
 
 	Vec3 refract(const Vec3& ray_dir, const Vec3& normal, double refraction_ratio) {

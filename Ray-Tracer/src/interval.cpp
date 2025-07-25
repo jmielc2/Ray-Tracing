@@ -20,7 +20,7 @@ namespace rt {
 
 	Interval Interval::expand(const double delta) const {
 		const auto padding = delta / 2.0;
-		return Interval(min - padding, max + padding);
+		return { min - padding, max + padding };
 	}
 
 	double Interval::clamp(const double x) const {
