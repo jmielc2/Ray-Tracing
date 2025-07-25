@@ -57,14 +57,16 @@ namespace rt {
 				return {};
 			}
 		}
+		const auto point = ray.at(t);
+		const auto [u, v] = getSphereUV(point);
 
-		HitRecord record;
-		record.t = t;
-		record.material = material;
-		record.point = ray.at(t);
-		const auto [u, v] = getSphereUV(record.point);
-		record.u = u;
-		record.v = v;
+		HitRecord record {
+			.point = point,
+			.material = material,
+			.t = t,
+			.u = u,
+			.v = v,
+		};
 		const Vec3 outward_normal = (record.point - current_center) / radius;
 		record.set_face_normal(ray, outward_normal);
 		return { record };

@@ -19,7 +19,6 @@ namespace rt {
 		bool front_face = false;
 
 		// assumes outward_normal is unit vector
-		HitRecord() = default;
 		void set_face_normal(const Ray& r, const Vec3& outward_normal);
 	};
 
