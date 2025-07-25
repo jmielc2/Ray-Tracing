@@ -18,14 +18,14 @@ namespace rt {
         std::shared_ptr<Material> material;
         AABB bbox;
 
-
-        [[nodiscard]] std::pair<double, double> getQuadUV(const Point3& point) const;
+        virtual bool is_interior(double u, double v) const;
+        std::pair<double, double> getQuadUV(const Point3& point) const;
     public:
         Quad(const Point3& corner, const Vec3& u, const Vec3& v, const std::shared_ptr<Material>& material);
 
         virtual void set_bounding_box();
 
-        const AABB& bounding_box() const override;
+        [[nodiscard]] const AABB& bounding_box() const override;
         std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
     };
 }

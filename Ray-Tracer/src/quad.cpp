@@ -36,6 +36,14 @@ namespace rt {
         return { a, b };
     }
 
+    bool Quad::is_interior(const double u, const double v) const {
+        constexpr Interval zero_to_one(0, 1);
+        if (!zero_to_one.contains(u) || !zero_to_one.contains(v)) {
+            return false;
+        }
+        return true;
+    }
+
     std::optional<HitRecord> Quad::hit(const Ray& ray, const Interval& ray_t) const {
         const auto normal_dot_direction = dot(normal, ray.direction());
         if (std::fabs(normal_dot_direction) < 1e-8) [[unlikely]] {
@@ -48,8 +56,7 @@ namespace rt {
             return {};
         }
         const auto [u, v] = getQuadUV(point);
-        constexpr Interval zero_to_one(0, 1);
-        if (!zero_to_one.contains(u) || !zero_to_one.contains(v)) {
+        if (!is_interior(u, v)) {
             return {};
         }
 
