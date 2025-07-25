@@ -12,3 +12,7 @@ Following Peter Shirley *Ray Tracing in One Weekend Series* with my own multi-th
 ## Performance 
 
 ![Metrics](/docs/render-times.png)
+
+## References
+
+- https://raytracing.github.io/
