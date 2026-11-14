@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "perlin.hpp"
 #include "util.hpp"
 #include "rtw_image.hpp"

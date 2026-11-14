@@ -47,10 +47,10 @@ namespace rt {
         }
         const auto normal_dot_origin = dot(normal, ray.origin());
         const auto t = (D - normal_dot_origin) / normal_dot_direction;
-        const auto point = ray.at(t);
         if (!ray_t.contains(t)) {
             return {};
         }
+        const auto point = ray.at(t);
         const auto [u, v] = getQuadUV(point);
         if (!is_interior(u, v)) {
             return {};

@@ -193,9 +193,8 @@ int main(const int argc, char* argv[]) {
 			render_scene(quads(), "quads.ppm");
 			break;
 		}
-		default: {
+		default:
 			std::cout << "No such scene\n";
-		}
 		}
 		
 		#ifdef DNDEBUG

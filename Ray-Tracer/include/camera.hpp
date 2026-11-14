@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 #include "vec3.hpp"
 #include "color.hpp"
 #include "ray.hpp"

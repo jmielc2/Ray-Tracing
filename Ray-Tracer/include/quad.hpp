@@ -13,7 +13,7 @@ namespace rt {
         Point3 corner;
         Vec3 u, v; // front face is cross product of u and v
         Vec3 normal;
-        Vec3 w; // Equivalent to normal divided by it
+        Vec3 w; // Normal divided by its length squared
         double D;  // The dot product of any point on the plane and the normal will always equal this value
         std::shared_ptr<Material> material;
         AABB bbox;
