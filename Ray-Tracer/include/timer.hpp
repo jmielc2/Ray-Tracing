@@ -1,7 +1,6 @@
 #pragma once
 
 #include <chrono>
-#include <iostream>
 
 namespace rt {
 	template<class T = std::chrono::microseconds>
@@ -21,7 +20,7 @@ namespace rt {
 		void stop() {
 			if (!stopped) [[likely]] {
 				const auto end = std::chrono::high_resolution_clock::now();
-				std::cout << "Time: " << std::chrono::duration_cast<T>(end - start) << "\n";
+				std::print("Time: {}\n", std::chrono::duration_cast<T>(end - start));
 				stopped = true;
 			}
 		}

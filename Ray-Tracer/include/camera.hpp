@@ -9,14 +9,12 @@
 
 namespace rt {
 	struct CameraConfig {
-		Point3 position = Point3(0.0, 0.0, 10.0);
-		Vec3 look_dir = Vec3(0.0, 0.0, -1.0);
 		Vec3 vup = Vec3(0.0, 1.0, 0.0);
 		double aspect_ratio = 16.0 / 9.0;
-		double fov = degrees_to_radians(90.0);
+		double fov = 20.0;
 		double defocus_angle = 0.0;
-		double focus_dist = 10.0;
 		int width = 400, max_depth = 50, samples_per_pixel = 100;
+		Color background = Color(0, 0, 0);
 	};
 
 	class Camera {
@@ -35,12 +33,13 @@ namespace rt {
 		int height = 0;
 		std::unique_ptr<std::atomic<size_t>> progress_counter;
 		std::vector<Color> pixel_buffer{ 0 };
+		Color background;
 
 		[[nodiscard]] Ray get_ray(int pixel_x, int pixel_y) const;
 		[[nodiscard]] static Vec3 sample_square_offset();
 		[[nodiscard]] static Vec3 sample_disk_offset();
 		[[nodiscard]] Vec3 defocus_disk_sample() const;
-		[[nodiscard]] static Color ray_color(const Ray& ray, size_t depth, const Hittable& world);
+		[[nodiscard]] Color ray_color(const Ray& ray, size_t depth, const Hittable& world);
 		void update_basis_vectors();
 		void update_disk_basis_vectors();
 		void update_viewport_position();
@@ -58,6 +57,8 @@ namespace rt {
 
 		void initialize();
 		void look_at(const Point3& look_at_point);
+		void look_from(const Point3& look_from_point);
+		void set_focus_distance(double dist) { focus_dist = dist; }
 		void render(const Hittable& world);
 		[[nodiscard]] ImageData get_image_data(const std::string& filename) const;
 	};

@@ -1,5 +1,8 @@
 #include <iomanip>
 #include <thread>
+#include <print>
+#include <iostream>
+
 #include "camera.hpp"
 #include "material.hpp"
 
@@ -8,7 +11,7 @@ namespace rt {
 	* Private Member Functions
 	*/
 
-	const size_t num_threads = (std::thread::hardware_concurrency() > 0) ? std::thread::hardware_concurrency() : 1;
+	const size_t NUM_THREADS = (std::thread::hardware_concurrency() > 0) ? std::thread::hardware_concurrency() : 1;
 
 	Ray Camera::get_ray(const int pixel_x, const int pixel_y) const {
 		const Vec3 offset = sample_square_offset();
@@ -40,15 +43,15 @@ namespace rt {
 		if (hit_result.has_value()) {
 			const HitRecord& hit_record = hit_result.value();
 			const auto scatter_result = hit_record.material->scatter(ray, hit_record);
+			const auto color_from_emission = hit_record.material->emitted(hit_result->u, hit_result->v, hit_result->point);
 			if (scatter_result.has_value()) {
 				const ScatterRecord& scatter_record = scatter_result.value();
-				return scatter_record.attenuation * ray_color(scatter_record.scatter_ray, depth - 1, world);
+				const auto color_from_scatter = scatter_record.attenuation * ray_color(scatter_record.scatter_ray, depth - 1, world);
+				return color_from_emission + color_from_scatter;
 			}
-			return {0, 0, 0};
+			return color_from_emission;
 		}
-		const Vec3 unit_direction = normalize(ray.direction());
-		const double a = (unit_direction.y() + 1.0) * 0.5;
-		return (1 - a) * Color(1, 1, 1) + a * Color(0.5, 0.7, 1.0);
+		return background;
 	}
 
 	void Camera::update_basis_vectors() {
@@ -77,12 +80,11 @@ namespace rt {
 	}
 
 	void Camera::render_helper(const RenderBatchInfo info) {
-		std::cout << std::setprecision(3);
-		int curScanline = progress_counter->fetch_add(1);
+		auto curScanline = progress_counter->fetch_add(1);
 		while (curScanline < height) [[likely]] {
 			{
 				const auto lock = lockIO();
-				std::cout << "Progress: " << static_cast<double>(curScanline + 1) * 100.0 / static_cast<double>(height) << "%   \r";
+				std::print("Progress: {:.2f}%\n", static_cast<double>(curScanline + 1) * 100.0 / static_cast<double>(height));
 				std::cout.flush();
 			}
 			for (size_t x = 0; x < width; x++) {
@@ -118,29 +120,33 @@ namespace rt {
 	*/
 
 	Camera::Camera(const CameraConfig& config) :
-		position(config.position),
-		look_dir(normalize(config.look_dir)),
 		vup(config.vup),
 		width(config.width),
-		focus_dist(config.focus_dist),
 		defocus_angle(config.defocus_angle),
 		aspect(config.aspect_ratio),
 		fov(degrees_to_radians(config.fov)),
-		progress_counter(std::make_unique<std::atomic<size_t>>())
+		progress_counter(std::make_unique<std::atomic<size_t>>()),
+		background(config.background)
 	{
 		initialize();
 	}
 
+	void Camera::look_from(const Point3& look_from_point) {
+		position = look_from_point;
+	}
+
 	void Camera::look_at(const Point3& look_at_point) {
 		look_dir = look_at_point - position;
+		focus_dist = look_dir.length();
+		look_dir = normalize(look_dir);
 		update_basis_vectors();
 		update_viewport_position();
 	}
 
 	void Camera::render(const Hittable& world) {
-		std::cout << "Rendering on " << num_threads << " threads.\n";
+		std::print("Rendering on {} threads.\n", NUM_THREADS);
 		progress_counter->store(0);
-		const size_t thread_count = num_threads - 1;
+		const size_t thread_count = NUM_THREADS - 1;
 		std::vector<std::thread> threads(thread_count);
 		for (size_t i = 0; i < thread_count; i++) {
 			threads[i] = std::thread(&Camera::render_helper, this, RenderBatchInfo{ world });
@@ -149,14 +155,13 @@ namespace rt {
 		for (std::thread& thread : threads) {
 			thread.join();
 		}
-		std::cout << "\n";
 	}
 
 	ImageData Camera::get_image_data(const std::string& filename) const {
-		return ImageData{
-			filename,
-			width, height,
-			pixel_buffer
+		return ImageData {
+			.name = filename,
+			.width = width, .height = height,
+			.pixel_buffer = pixel_buffer
 		};
 	}
 }

@@ -1,11 +1,13 @@
 #pragma once
 
 #include "hittable.hpp"
+#include <hittable_list.hpp>
 #include "interval.hpp"
 #include "aabb.hpp"
 #include "material.hpp"
 #include "vec3.hpp"
 #include "ray.hpp"
+
 #include <optional>
 
 namespace rt {
@@ -18,14 +20,16 @@ namespace rt {
         std::shared_ptr<Material> material;
         AABB bbox;
 
-        virtual bool is_interior(double u, double v) const;
-        std::pair<double, double> getQuadUV(const Point3& point) const;
+        [[nodiscard]] virtual bool is_interior(double u, double v) const;
+        [[nodiscard]] std::pair<double, double> getQuadUV(const Point3& point) const;
     public:
         Quad(const Point3& corner, const Vec3& u, const Vec3& v, const std::shared_ptr<Material>& material);
 
         virtual void set_bounding_box();
 
         [[nodiscard]] const AABB& bounding_box() const override { return bbox; }
-        std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
+        [[nodiscard]] std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
     };
+
+    std::shared_ptr<HittableList> box(const Point3& a, const Point3& b, std::shared_ptr<Material> material);
 }

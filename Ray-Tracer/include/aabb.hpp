@@ -24,5 +24,9 @@ namespace rt {
 
 		static const AABB empty;
 	};
+
+	AABB operator+(const AABB& bbox, const Vec3& offset);
+	AABB operator+(const Vec3& offset, const AABB& bbox);
+
 }
 

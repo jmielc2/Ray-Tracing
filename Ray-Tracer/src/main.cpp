@@ -1,3 +1,6 @@
+#include <iostream>
+#include <print>
+
 #include "util.hpp"
 #include "hittable_list.hpp"
 #include "sphere.hpp"
@@ -13,17 +16,16 @@ using namespace rt;
 static std::tuple<HittableList, Camera> bouncing_spheres() {
 	// Setup Camera
 	constexpr CameraConfig config {
-		.position = Point3(13, 2, 3),
-		.aspect_ratio = 16.0 / 9.0,
 		.fov = 20.0,
 		.defocus_angle = 0.6,
-		.focus_dist = 10.0,
 		.width = 1200,
-		.max_depth = 50,
-		.samples_per_pixel = 500
+		.samples_per_pixel = 500,
+		.background = Color(0.7, 0.8, 1.0),
 	};
 	Camera camera(config);
+	camera.look_from(Point3(13, 2, 3));
 	camera.look_at(Point3(0, 0, 0));
+	camera.set_focus_distance(10.0);
 	camera.initialize();
 
 	// Build Scene
@@ -71,16 +73,17 @@ static std::tuple<HittableList, Camera> bouncing_spheres() {
 static std::tuple<HittableList, Camera> checkered_spheres() {
 	// Setup Camera
 	constexpr CameraConfig config {
-		.position = Point3(13, 2, 3),
 		.aspect_ratio = 16.0 / 9.0,
 		.fov = 20.0,
-		.focus_dist = 10.0,
 		.width = 400,
 		.max_depth = 50,
 		.samples_per_pixel = 100,
+		.background = Color(0.7, 0.8, 1.0),
 	};
 	Camera camera(config);
+	camera.look_from(Point3(14, 2, 3));
 	camera.look_at(Point3(0, 0, 0));
+	camera.set_focus_distance(10.0);
 	camera.initialize();
 
 	// Build Scene
@@ -94,16 +97,17 @@ static std::tuple<HittableList, Camera> checkered_spheres() {
 static std::tuple<HittableList, Camera> earth() {
 	// Setup camera
 	constexpr CameraConfig config {
-		.position = Point3(0, 0, 12),
 		.aspect_ratio = 16.0 / 9.0,
 		.fov = 20.0,
-		.focus_dist = 10.0,
 		.width = 400,
 		.max_depth = 50,
-		.samples_per_pixel = 100
+		.samples_per_pixel = 100,
+		.background = Color(0.7, 0.8, 1.0),
 	};
 	Camera camera(config);
-	camera.look_at(Point3(0,0,0));
+	camera.look_from(Point3(0, 0, 12));
+	camera.look_at(Point3(0, 0, 0));
+	camera.set_focus_distance(10.0);
 	camera.initialize();
 	
 	// Create scene
@@ -116,12 +120,14 @@ static std::tuple<HittableList, Camera> earth() {
 
 static std::tuple<HittableList, Camera> perlin_spheres() {
 	constexpr CameraConfig config {
-		.position = Point3(13, 2, 3),
 		.aspect_ratio = 16.0 / 9.0,
-		.fov = 20.0
+		.fov = 20.0,
+		.background = Color(0.7, 0.8, 1.0),
 	};
 	Camera camera(config);
+	camera.look_from(Point3(13, 2, 3));
 	camera.look_at(Point3(0, 0, 0));
+	camera.set_focus_distance(10.0);
 	camera.initialize();
 
 	// Create scene
@@ -135,12 +141,14 @@ static std::tuple<HittableList, Camera> perlin_spheres() {
 
 static std::tuple<HittableList, Camera> quads() {
 	constexpr CameraConfig config {
-		.position = Point3(0, 0, 9),
 		.aspect_ratio = 1.0,
-		.fov = 80.0
+		.fov = 80.0,
+		.background = Color(0.7, 0.8, 1.0),
 	};
 	Camera camera(config);
+	camera.look_from(Point3(0, 0, 9));
 	camera.look_at(Point3(0, 0, 0));
+	camera.set_focus_distance(10.0);
 	camera.initialize();
 
 	// Materials
@@ -160,8 +168,68 @@ static std::tuple<HittableList, Camera> quads() {
 	return { std::move(world), std::move(camera) };
 }
 
+static std::tuple<HittableList, Camera> simple_light() {
+	HittableList world;
+	const auto perlinTexture = std::make_shared<NoiseTexture>(4);
+	world.add(std::make_shared<Sphere>(Point3(0,-1000,0), 1000, std::make_shared<Lambertian>(perlinTexture)));
+	world.add(std::make_shared<Sphere>(Point3(0,2,0), 2, make_shared<Lambertian>(perlinTexture)));
+
+	auto diffuseLight = std::make_shared<DiffuseLight>(Color(4,4,4));
+	world.add(std::make_shared<Quad>(Point3(3,1,-2), Vec3(2,0,0), Vec3(0,2,0), diffuseLight));
+	world.add(std::make_shared<Sphere>(Point3(0,7,0), 2, diffuseLight));
+
+	constexpr CameraConfig config {
+		.fov = 20.0,
+		.background = Color(0,0,0),
+	};
+	Camera camera(config);
+	camera.look_from(Point3(26, 3, 6));
+	camera.look_at(Point3{0, 2, 0});
+	camera.initialize();
+
+	return { std::move(world), std::move(camera) };
+}
+
+static std::tuple<HittableList, Camera> cornell_box() {
+	HittableList world;
+
+	auto red = std::make_shared<Lambertian>(Color(.65, .05, .05));
+	auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
+	auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
+	auto light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+
+	world.add(std::make_shared<Quad>(Point3(555,0,0), Vec3(0,555,0), Vec3(0,0,555), green));
+	world.add(std::make_shared<Quad>(Point3(0,0,0), Vec3(0,555,0), Vec3(0,0,555), red));
+	world.add(std::make_shared<Quad>(Point3(343, 554, 332), Vec3(-130,0,0), Vec3(0,0,-105), light));
+	world.add(std::make_shared<Quad>(Point3(0,0,0), Vec3(555,0,0), Vec3(0,0,555), white));
+	world.add(std::make_shared<Quad>(Point3(555,555,555), Vec3(-555,0,0), Vec3(0,0,-555), white));
+	world.add(std::make_shared<Quad>(Point3(0,0,555), Vec3(555,0,0), Vec3(0,555,0), white));
+
+	std::shared_ptr<Hittable> box1 = box(Point3(0,0,0), Point3(165,330,165), white);
+	box1 = make_shared<RotateY>(box1, 15);
+	box1 = make_shared<Translate>(box1, Vec3(265,0,295));
+	world.add(box1);
+
+	std::shared_ptr<Hittable> box2 = box(Point3(0,0,0), Point3(165,165,165), white);
+	box2 = make_shared<RotateY>(box2, -18);
+	box2 = make_shared<Translate>(box2, Vec3(130,0,65));
+	world.add(box2);
+
+	CameraConfig config {
+		.aspect_ratio = 1.0,
+		.fov = 40,
+		.width = 600,
+		.samples_per_pixel = 1000,
+	};
+	Camera camera(config);
+	camera.look_from(Point3(278, 278, -800));
+	camera.look_at(Point3(278, 278, 0));
+	camera.initialize();
+	return { std::move(world), std::move(camera) };
+}
+
 void render_scene(std::tuple<HittableList, Camera> scene, const std::string& filename) {
-	std::cout << "Scene: " << filename << "\n";
+	std::print("Scene: {}\n", filename);
 	auto& [world, camera] = scene;
 	Timer<std::chrono::seconds> timer;
 	camera.render(BVHNode(world));
@@ -193,18 +261,26 @@ int main(const int argc, char* argv[]) {
 			render_scene(quads(), "quads.ppm");
 			break;
 		}
+		case(5): {
+			render_scene(simple_light(), "simple-light.ppm");
+			break;
+		}
+		case(6): {
+			render_scene(cornell_box(), "cornell-box.ppm");
+			break;
+		}
 		default:
-			std::cout << "No such scene\n";
+			std::print( "No such scene\n");
 		}
 		
 		#ifdef DNDEBUG
-		std::cout << "\nPress enter to close ";
+		std::print("\nPress enter to close > ");
 		std::ignore = std::getchar();
 		#endif
 		
 		return EXIT_SUCCESS;
 	} catch (const std::exception& e) {
-		std::cerr << e.what() << "\n";
+		std::print(std::cerr, "Failed to render scene: {}\n", e.what());
 		return EXIT_FAILURE;
 	}
 }

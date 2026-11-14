@@ -2,6 +2,8 @@
 #include "rtw_image.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
+#include <stdexcept>
+
 #include "stb_image.h"
 
 namespace rt {

@@ -66,4 +66,23 @@ namespace rt {
         record.set_face_normal(ray, normal);
         return { record };
     }
+
+    std::shared_ptr<HittableList> box(const Point3& a, const Point3& b, std::shared_ptr<Material> material) {
+        const auto sides = std::make_shared<HittableList>();
+
+        const auto min = Point3(std::fmin(a.x(), b.x()), std::fmin(a.y(), b.y()), std::fmin(a.z(), b.z()));
+        const auto max = Point3(std::fmax(a.x(), b.x()), std::fmax(a.y(), b.y()), std::fmax(a.z(), b.z()));
+
+        const auto dx = Vec3(max.x() - min.x(), 0, 0);
+        const auto dy = Vec3(0, max.y() - min.y(), 0);
+        const auto dz = Vec3(0, 0, max.z() - min.z());
+
+        sides->add(std::make_shared<Quad>(min, dx, dy, material));
+        sides->add(std::make_shared<Quad>(min, dy,  dz, material));
+        sides->add(std::make_shared<Quad>(min, dz, dx, material));
+        sides->add(std::make_shared<Quad>(max, -dy, -dx, material));
+        sides->add(std::make_shared<Quad>(max, -dz, -dy, material));
+        sides->add(std::make_shared<Quad>(max, -dx, -dz, material));
+        return sides;
+    }
 }

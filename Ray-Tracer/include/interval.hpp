@@ -21,5 +21,8 @@ namespace rt {
 
 		static const Interval empty, universe;
 	};
+
+	Interval operator+(const Interval& interval, double displacement);
+	Interval operator+(double displacement, const Interval& interval);
 }
 

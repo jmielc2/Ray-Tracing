@@ -64,4 +64,12 @@ namespace rt {
 		}
 		return { ScatterRecord { Color(1, 1, 1), Ray(record.point, scatter_direction, ray.time()) } };
 	}
+
+	/*
+	* Diffuse Light
+	*/
+
+	Color DiffuseLight::emitted(double u, double v, const Point3& p) const {
+		return tex->value(u, v, p);
+	}
 }
