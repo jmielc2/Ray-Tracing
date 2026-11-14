@@ -18,7 +18,5 @@ namespace rt {
 	std::optional<HitRecord> RotateY::hit(const Ray& r, const Interval& ray_t) const {
 		return {};
 	}
-
-	
 }
 
