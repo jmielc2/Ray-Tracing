@@ -147,21 +147,18 @@ namespace rt {
 		std::print("Rendering on {} threads.\n", NUM_THREADS);
 		progress_counter->store(0);
 		const size_t thread_count = NUM_THREADS - 1;
-		std::vector<std::thread> threads(thread_count);
+		std::vector<std::jthread> threads(thread_count);
 		for (size_t i = 0; i < thread_count; i++) {
-			threads[i] = std::thread(&Camera::render_helper, this, RenderBatchInfo{ world });
+			threads[i] = std::jthread(&Camera::render_helper, this, RenderBatchInfo{ world });
 		}
 		render_helper(RenderBatchInfo{ world });
-		for (std::thread& thread : threads) {
-			thread.join();
-		}
 	}
 
 	ImageData Camera::get_image_data(const std::string& filename) const {
 		return ImageData {
 			.name = filename,
 			.width = width, .height = height,
-			.pixel_buffer = pixel_buffer
+			.pixels = pixel_buffer
 		};
 	}
 }

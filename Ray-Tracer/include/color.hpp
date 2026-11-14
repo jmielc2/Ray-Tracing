@@ -12,7 +12,7 @@ namespace rt {
 	struct ImageData {
 		std::string name;
 		int width, height;
-		std::vector<Color> pixel_buffer;
+		std::vector<Color> pixels;
 	};
 
 	void write_to_file(const ImageData& data);

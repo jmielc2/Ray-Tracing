@@ -1,9 +1,9 @@
 #include "util.hpp"
 #include "rtw_image.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
 #include <stdexcept>
-
 #include "stb_image.h"
 
 namespace rt {
@@ -48,7 +48,6 @@ namespace rt {
         if (data.empty()) return magenta;
         x = clamp<int>(x, 0, image_width);
         y = clamp<int>(y, 0, image_height);
-        int index = y * image_width * y + x;
         return data[y * image_width + x];
     }
 }

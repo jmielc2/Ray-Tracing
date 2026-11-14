@@ -52,7 +52,10 @@ namespace rt {
 
 	class RotateY : public Hittable {
 	public:
-		RotateY(std::shared_ptr<Hittable> object, [[maybe_unused]] double degree) : object(std::move(object)), degree(degrees_to_radians(degree)) {
+		RotateY(std::shared_ptr<Hittable> object, double angle) : object(std::move(object)) {
+			const auto radian = degrees_to_radians(angle);
+			sin_theta = sin(radian);
+			cos_theta = cos(radian);
 			bbox = (object == nullptr) ? AABB::empty : object->bounding_box();
 		}
 
@@ -60,7 +63,8 @@ namespace rt {
 		[[nodiscard]] const AABB& bounding_box() const override { return bbox; }
 	private:
 		std::shared_ptr<Hittable> object;
-		double degree;
+		double sin_theta;
+		double cos_theta;
 		AABB bbox;
 	};
 }

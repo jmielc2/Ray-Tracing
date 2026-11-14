@@ -15,8 +15,19 @@ namespace rt {
 		return hit_result;
 	}
 
-	std::optional<HitRecord> RotateY::hit(const Ray& r, const Interval& ray_t) const {
-		return {};
+	std::optional<HitRecord> RotateY::hit(const Ray& ray, const Interval& ray_t) const {
+		// Transform to object space
+		const auto rotated_ray = Ray(
+			ray.origin(),
+			ray.direction()
+		);
+
+		// Run collision
+		auto hit_record = object->hit(rotated_ray, ray_t);
+		if (hit_record.has_value()) {
+			// Update hit record
+		}
+		return hit_record;
 	}
 }
 

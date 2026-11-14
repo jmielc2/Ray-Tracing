@@ -196,30 +196,31 @@ static std::tuple<HittableList, Camera> cornell_box() {
 	auto red = std::make_shared<Lambertian>(Color(.65, .05, .05));
 	auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
 	auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
-	auto light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+	auto light = std::make_shared<DiffuseLight>(Color(3, 3, 3));
 
 	world.add(std::make_shared<Quad>(Point3(555,0,0), Vec3(0,555,0), Vec3(0,0,555), green));
 	world.add(std::make_shared<Quad>(Point3(0,0,0), Vec3(0,555,0), Vec3(0,0,555), red));
-	world.add(std::make_shared<Quad>(Point3(343, 554, 332), Vec3(-130,0,0), Vec3(0,0,-105), light));
+	world.add(std::make_shared<Quad>(Point3(485, 554, 485), Vec3(-415,0,0), Vec3(0,0,-415), light));
 	world.add(std::make_shared<Quad>(Point3(0,0,0), Vec3(555,0,0), Vec3(0,0,555), white));
 	world.add(std::make_shared<Quad>(Point3(555,555,555), Vec3(-555,0,0), Vec3(0,0,-555), white));
 	world.add(std::make_shared<Quad>(Point3(0,0,555), Vec3(555,0,0), Vec3(0,555,0), white));
 
 	std::shared_ptr<Hittable> box1 = box(Point3(0,0,0), Point3(165,330,165), white);
-	// box1 = make_shared<RotateY>(box1, 15);
+	box1 = make_shared<RotateY>(box1, 15);
 	box1 = make_shared<Translate>(box1, Vec3(265,0,295));
 	world.add(box1);
 
 	std::shared_ptr<Hittable> box2 = box(Point3(0,0,0), Point3(165,165,165), white);
-	// box2 = make_shared<RotateY>(box2, -18);
+	box2 = make_shared<RotateY>(box2, -18);
 	box2 = make_shared<Translate>(box2, Vec3(130,0,65));
 	world.add(box2);
 
 	CameraConfig config {
 		.aspect_ratio = 1.0,
 		.fov = 40,
-		.width = 600,
-		.samples_per_pixel = 5000,
+		.width = 400,
+		.max_depth = 40,
+		.samples_per_pixel = 100,
 	};
 	Camera camera(config);
 	camera.look_from(Point3(278, 278, -800));
@@ -242,31 +243,31 @@ int main(const int argc, char* argv[]) {
 		const int render = (argc == 2) ? std::stoi(argv[1]) : 0;
 		switch (render) {
 		case(0): {
-			render_scene(bouncing_spheres(), "bouncing-spheres.ppm");
+			render_scene(bouncing_spheres(), "bouncing-spheres.png");
 			break;
 		}
 		case(1): {
-			render_scene(checkered_spheres(), "checkered-spheres.ppm");
+			render_scene(checkered_spheres(), "checkered-spheres.png");
 			break;
 		}
 		case(2): {
-			render_scene(earth(), "earth.ppm");
+			render_scene(earth(), "earth.png");
 			break;
 		}
 		case(3): {
-			render_scene(perlin_spheres(), "perlin-spheres.ppm");
+			render_scene(perlin_spheres(), "perlin-spheres.png");
 			break;
 		}
 		case(4): {
-			render_scene(quads(), "quads.ppm");
+			render_scene(quads(), "quads.png");
 			break;
 		}
 		case(5): {
-			render_scene(simple_light(), "simple-light.ppm");
+			render_scene(simple_light(), "simple-light.png");
 			break;
 		}
 		case(6): {
-			render_scene(cornell_box(), "cornell-box.ppm");
+			render_scene(cornell_box(), "cornell-box.png");
 			break;
 		}
 		default:
@@ -274,7 +275,7 @@ int main(const int argc, char* argv[]) {
 		}
 		
 		#ifdef DNDEBUG
-		std::print("\nPress enter to close > ");
+		std::print("\nPress enter to close: ");
 		std::ignore = std::getchar();
 		#endif
 		

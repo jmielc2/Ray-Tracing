@@ -2,9 +2,23 @@
 # project specific logic here.
 #
 
-include_directories("include" "extern")
+include_directories("include")
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
+
+file(
+        DOWNLOAD
+        https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/CPM.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
+)
+include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
+
+CPMAddPackage(
+        NAME stb
+        GITHUB_REPOSITORY nothings/stb
+        GIT_TAG 9600522
+        DOWNLOAD_ONLY YES
+)
 
 # Add source to this project's executable.
 add_executable (Ray-Tracer ${SOURCE_FILES})
@@ -21,6 +35,11 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
     endif()
   endif()
+  if(stb_ADDED)
+    add_library(stb INTERFACE)
+    target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
+  endif()
+  target_link_libraries(Ray-Tracer PRIVATE stb)
 endif()
 
 # TODO: Add tests and install targets if needed.
