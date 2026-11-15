@@ -220,7 +220,7 @@ static std::tuple<HittableList, Camera> cornell_box() {
 		.fov = 40,
 		.width = 400,
 		.max_depth = 40,
-		.samples_per_pixel = 100,
+		.samples_per_pixel = 10000,
 	};
 	Camera camera(config);
 	camera.look_from(Point3(278, 278, -800));
