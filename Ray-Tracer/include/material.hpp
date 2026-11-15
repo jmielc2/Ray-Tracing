@@ -60,5 +60,15 @@ namespace rt {
 	private:
 		std::shared_ptr<Texture> tex;
 	};
+
+	class Isotropic final : public Material {
+	public:
+		explicit Isotropic(std::shared_ptr<Texture> texture) : texture(std::move(texture)) {}
+		explicit Isotropic(const Color& albedo) : texture(std::make_shared<SolidColor>(albedo)) {}
+
+		[[nodiscard]] std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &record) const override;
+	private:
+		std::shared_ptr<Texture> texture;
+	};
 }
 

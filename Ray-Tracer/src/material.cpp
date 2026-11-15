@@ -72,4 +72,11 @@ namespace rt {
 	Color DiffuseLight::emitted(double u, double v, const Point3& p) const {
 		return tex->value(u, v, p);
 	}
+
+	std::optional<ScatterRecord> Isotropic::scatter(const Ray &ray, const HitRecord &record) const {
+		return ScatterRecord {
+			.attenuation = texture->value(record.u, record.v, record.point),
+			.scatter_ray = Ray(record.point, random_unit_vector(), ray.time())
+		};
+	}
 }
