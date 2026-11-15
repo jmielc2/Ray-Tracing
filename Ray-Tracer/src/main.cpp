@@ -216,7 +216,7 @@ static std::tuple<HittableList, Camera> cornell_box() {
 	box2 = std::make_shared<Translate>(box2, Vec3(130,0,65));
 	world.add(box2);
 
-	CameraConfig config {
+	constexpr CameraConfig config {
 		.aspect_ratio = 1.0,
 		.fov = 40,
 		.width = 400,
@@ -256,7 +256,7 @@ static std::tuple<HittableList, Camera> cornell_smoke() {
 	world.add(std::make_shared<ConstantMedium>(box1, 0.01, Color(0, 0, 0)));
 	world.add(std::make_shared<ConstantMedium>(box2, 0.01, Color(1, 1, 1)));
 
-	CameraConfig config {
+	constexpr CameraConfig config {
 		.aspect_ratio = 1.0,
 		.fov = 40,
 		.width = 400,
@@ -331,7 +331,7 @@ static std::tuple<HittableList, Camera> final_scene() {
     );
 
 
-	const CameraConfig config {
+    constexpr CameraConfig config {
 		.aspect_ratio = 1.0,
 		.fov = 40,
 		.width = 800,
@@ -340,7 +340,7 @@ static std::tuple<HittableList, Camera> final_scene() {
 	};
 
 	Camera camera(config);
-	camera.look_from(Point3(278, 278, 0));
+	camera.look_from(Point3(478, 278, -600));
 	camera.look_at(Point3(278, 278, 0));
 	camera.initialize();
 	return { std::move(world), std::move(camera) };
@@ -393,6 +393,7 @@ int main(const int argc, char* argv[]) {
 		}
 		case(8): {
 			render_scene(final_scene(), "final-scene.png");
+			break;
 		}
 		default:
 			std::print( "No such scene\n");
