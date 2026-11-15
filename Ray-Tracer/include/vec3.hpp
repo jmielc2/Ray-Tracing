@@ -18,8 +18,10 @@ namespace rt {
 		[[nodiscard]] const double& z() const { return e[to_index(Axis::Z)]; }
 
 		Vec3 operator-() const;
-		double operator[](const int i) const { return e[i]; }
-		double& operator[](const int i) { return e[i]; }
+		// double operator[](const int i) const { return e[i]; }
+		// double& operator[](const int i) { return e[i]; }
+		double operator[](const Axis i) const { return e[to_index(i)]; }
+		double& operator[](const Axis i) { return e[to_index(i)]; }
 		Vec3& operator+=(const Vec3& v);
 		Vec3& operator-=(const Vec3& v);
 		Vec3& operator*=(double t);
@@ -49,5 +51,8 @@ namespace rt {
 	inline double distance(const Point3& a, const Point3& b) { return (b - a).length(); }
 	inline Vec3 reflect(const Vec3& ray_dir, const Vec3& normal) { return ray_dir - 2 * normal * dot(ray_dir, normal); }
 	Vec3 refract(const Vec3& ray_dir, const Vec3& normal, double refraction_ratio);
+	Vec3 rotate_y(const Vec3& v, double cos_theta, double sin_theta);
+	Vec3 rotate_x(const Vec3& v, double cos_theta, double sin_theta);
+	Vec3 rotate_z(const Vec3& v, double cos_theta, double sin_theta);
 }
 

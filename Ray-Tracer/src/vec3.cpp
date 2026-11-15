@@ -15,16 +15,16 @@ namespace rt {
 	}
 
 	Vec3& Vec3::operator+=(const Vec3& v) {
-		e[to_index(Axis::X)] += v[to_index(Axis::X)];
-		e[to_index(Axis::Y)] += v[to_index(Axis::Y)];
-		e[to_index(Axis::Z)] += v[to_index(Axis::Z)];
+		e[to_index(Axis::X)] += v[Axis::X];
+		e[to_index(Axis::Y)] += v[Axis::Y];
+		e[to_index(Axis::Z)] += v[Axis::Z];
 		return *this;
 	}
 
 	Vec3& Vec3::operator-=(const Vec3& v) {
-		e[to_index(Axis::X)] -= v[to_index(Axis::X)];
-		e[to_index(Axis::Y)] -= v[to_index(Axis::Y)];
-		e[to_index(Axis::Z)] -= v[to_index(Axis::Z)];
+		e[to_index(Axis::X)] -= v[Axis::X];
+		e[to_index(Axis::Y)] -= v[Axis::Y];
+		e[to_index(Axis::Z)] -= v[Axis::Z];
 		return *this;
 	}
 
@@ -133,5 +133,29 @@ namespace rt {
 		Vec3 perp_component = refraction_ratio * (ray_dir + cos_theta * normal);
 		Vec3 parallel_component = -1 * std::sqrt(std::fabs(1 - perp_component.length_squared())) * normal;
 		return perp_component + parallel_component;
+	}
+
+	Vec3 rotate_y(const Vec3& v, double cos_theta, double sin_theta) {
+		return {
+			v.x() * cos_theta + v.z() * sin_theta,
+			v.y(),
+			v.z() * cos_theta - v.x() * sin_theta
+		};
+	}
+
+	Vec3 rotate_x(const Vec3& v, double cos_theta, double sin_theta) {
+		return {
+			v.x(),
+			v.y() * cos_theta - v.z() * sin_theta,
+			v.z() * cos_theta + v.y() * sin_theta
+		};
+	}
+
+	Vec3 rotate_z(const Vec3& v, double cos_theta, double sin_theta) {
+		return {
+			v.x() * cos_theta - v.y() * sin_theta,
+			v.y() * cos_theta + v.x() * sin_theta,
+			v.z()
+		};
 	}
 }

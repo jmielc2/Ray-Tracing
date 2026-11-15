@@ -67,8 +67,9 @@ namespace rt {
 
 		for (int i = 0; i < 3; i++) {
 			const auto& interval = axis_interval(i);
-			const auto pos = origin[i];
-			const auto dir_inv = 1.0 / direction[i];
+			const auto axis = to_axis(i);
+			const auto pos = origin[axis];
+			const auto dir_inv = 1.0 / direction[axis];
 
 			const double t0 = (interval.min - pos) * dir_inv;
 			const double t1 = (interval.max - pos) * dir_inv;

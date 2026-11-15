@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+
 #include "aabb.hpp"
 #include "interval.hpp"
 #include "vec3.hpp"
@@ -52,12 +53,33 @@ namespace rt {
 
 	class RotateY : public Hittable {
 	public:
-		RotateY(std::shared_ptr<Hittable> object, double angle) : object(std::move(object)) {
-			const auto radian = degrees_to_radians(angle);
-			sin_theta = sin(radian);
-			cos_theta = cos(radian);
-			bbox = (object == nullptr) ? AABB::empty : object->bounding_box();
-		}
+		RotateY(std::shared_ptr<Hittable> object, double angle);
+
+		[[nodiscard]] std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
+		[[nodiscard]] const AABB& bounding_box() const override { return bbox; }
+	private:
+		std::shared_ptr<Hittable> object;
+		double sin_theta;
+		double cos_theta;
+		AABB bbox;
+	};
+
+	class RotateX : public Hittable {
+	public:
+		RotateX(std::shared_ptr<Hittable> object, double angle);
+
+		[[nodiscard]] std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
+		[[nodiscard]] const AABB& bounding_box() const override { return bbox; }
+	private:
+		std::shared_ptr<Hittable> object;
+		double sin_theta;
+		double cos_theta;
+		AABB bbox;
+	};
+
+	class RotateZ : public Hittable {
+	public:
+		RotateZ(std::shared_ptr<Hittable> object, double angle);
 
 		[[nodiscard]] std::optional<HitRecord> hit(const Ray& ray, const Interval& ray_t) const override;
 		[[nodiscard]] const AABB& bounding_box() const override { return bbox; }

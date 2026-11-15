@@ -7,12 +7,13 @@
 #include <utility>
 #include <concepts>
 #include <mutex>
+#include <stdexcept>
 
 namespace rt {
 	// Helper Constants
 	constexpr double infinity = std::numeric_limits<double>::infinity();
 	constexpr double pi = std::numbers::pi_v<double>;
-	enum class Axis {
+	enum class Axis : int {
 		X = 0,
 		Y = 1,
 		Z = 2
@@ -29,6 +30,15 @@ namespace rt {
 	}
 	constexpr int to_index(const Axis a) {
 		return std::to_underlying(a);
+	}
+
+	constexpr Axis to_axis(const int i) {
+		switch (i) {
+			case(0): return Axis::X;
+			case(1): return Axis::Y;
+			case(2): return Axis::Z;
+			default: throw std::invalid_argument("Invalid axis index");
+		}
 	}
 
 	template<class O, std::totally_ordered T>
