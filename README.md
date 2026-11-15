@@ -5,13 +5,9 @@ Following Peter Shirley *Ray Tracing in One Weekend Series* with my own multi-th
 ## Gallery
 
 ![Bouncing Spheres](/docs/bouncing-spheres.png)
-| Quads | Checkered Spheres | Perlin Noise |
+| Cornell Box | Checkered Spheres | Perlin Noise |
 | --- | --- | --- |
-| ![](/docs/quads.png) | ![](/docs/checkered-spheres.png) | ![](/docs/perlin-spheres.png) |
-
-## Performance 
-
-![Metrics](/docs/render-times.png)
+| ![](/docs/cornell-box.png) | ![](/docs/checkered-spheres.png) | ![](/docs/perlin-spheres.png) |
 
 ## References
 
