@@ -318,8 +318,8 @@ static std::tuple<HittableList, Camera> final_scene() {
     world.add(std::make_shared<Sphere>(Point3(220,280,300), 80, std::make_shared<Lambertian>(pertext)));
 
     HittableList boxes2;
-    auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
-    int ns = 1000;
+    const auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
+    constexpr int ns = 1000;
     for (int j = 0; j < ns; j++) {
         boxes2.add(std::make_shared<Sphere>(Point3::random(0,165), 10, white));
     }
@@ -346,7 +346,7 @@ static std::tuple<HittableList, Camera> final_scene() {
 	return { std::move(world), std::move(camera) };
 }
 
-void render_scene(std::tuple<HittableList, Camera> scene, const std::string& filename) {
+static void render_scene(std::tuple<HittableList, Camera> scene, const std::string_view filename) {
 	std::print("Scene: {}\n", filename);
 	auto& [world, camera] = scene;
 	Timer<std::chrono::seconds> timer;
@@ -398,12 +398,6 @@ int main(const int argc, char* argv[]) {
 		default:
 			std::print( "No such scene\n");
 		}
-		
-		#ifdef DNDEBUG
-		std::print("\nPress enter to close: ");
-		std::ignore = std::getchar();
-		#endif
-		
 		return EXIT_SUCCESS;
 	} catch (const std::exception& e) {
 		std::print(std::cerr, "Failed to render scene: {}\n", e.what());

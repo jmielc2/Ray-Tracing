@@ -10,7 +10,7 @@ namespace rt {
     constexpr Color cyan(1, 0, 1);
 
 	struct ImageData {
-		std::string name;
+		std::string_view name;
 		int width, height;
 		std::vector<Color> pixels;
 	};

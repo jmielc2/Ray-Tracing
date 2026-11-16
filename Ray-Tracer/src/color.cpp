@@ -44,6 +44,6 @@ namespace rt {
 		std::ranges::copy(data.pixels | std::views::transform(transformColorToArray) | std::views::join, std::back_inserter(buffer));
 
 		// Last argument is the stride: bytes per row
-		stbi_write_png(data.name.c_str(), width, height, 3, buffer.data(), width * 3);
+		stbi_write_png(std::string(data.name).c_str(), width, height, 3, buffer.data(), width * 3);
 	}
 }

@@ -60,7 +60,7 @@ namespace rt {
 		void look_from(const Point3& look_from_point);
 		void set_focus_distance(double dist) { focus_dist = dist; }
 		void render(const Hittable& world);
-		[[nodiscard]] ImageData get_image_data(const std::string& filename) const;
+		[[nodiscard]] ImageData get_image_data(std::string_view filename) const;
 	};
 }
 

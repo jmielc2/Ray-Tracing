@@ -126,6 +126,7 @@ namespace rt {
 		aspect(config.aspect_ratio),
 		fov(degrees_to_radians(config.fov)),
 		progress_counter(std::make_unique<std::atomic<size_t>>()),
+		samples_per_pixel(config.samples_per_pixel),
 		background(config.background)
 	{
 		initialize();
@@ -154,7 +155,7 @@ namespace rt {
 		render_helper(RenderBatchInfo{ world });
 	}
 
-	ImageData Camera::get_image_data(const std::string& filename) const {
+	ImageData Camera::get_image_data(const std::string_view filename) const {
 		return ImageData {
 			.name = filename,
 			.width = width, .height = height,
