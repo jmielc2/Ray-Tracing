@@ -259,9 +259,9 @@ static std::tuple<HittableList, Camera> cornell_smoke() {
 	constexpr CameraConfig config {
 		.aspect_ratio = 1.0,
 		.fov = 40,
-		.width = 400,
+		.width = 800,
 		.max_depth = 40,
-		.samples_per_pixel = 10000,
+		.samples_per_pixel = 1000,
 	};
 	Camera camera(config);
 	camera.look_from(Point3(278, 278, -800));
