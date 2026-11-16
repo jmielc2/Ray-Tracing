@@ -11,7 +11,7 @@ namespace rt {
 	* Private Member Functions
 	*/
 
-	const size_t NUM_THREADS = (std::thread::hardware_concurrency() >= 2) ? std::thread::hardware_concurrency() / 2 : 1;
+	const size_t NUM_THREADS = (std::thread::hardware_concurrency() >= 2) ? std::thread::hardware_concurrency() : 1;
 
 	Ray Camera::get_ray(const int pixel_x, const int pixel_y) const {
 		const Vec3 offset = sample_square_offset();
